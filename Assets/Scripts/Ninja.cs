@@ -46,12 +46,14 @@ public class Ninja : MonoBehaviour {
 	private TextMesh		turnCounter; //the number that indicates how many spots the ninja is from Tommy
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
+	private Foot			foot;
 
 	// Use this for initialization
 
 	void Start () 
 	{
 		//initialize variables
+		foot = GameObject.Find ("Foot").GetComponent<Foot>();
 		jumpState = JumpState.GROUNDED;
 		jumpPointNumber = jumpPoints.Count;
 		currentJumpPoint = jumpPointNumber - 1;
@@ -109,22 +111,13 @@ public class Ninja : MonoBehaviour {
 	void OnTriggerEnter2D (Collider2D coll)
 	{
 		if (jumpState == JumpState.GROUNDED &&
-		    coll.gameObject.tag == "Foot" && coll.gameObject.GetComponent<Foot>().attackState == AttackState.SHOOTING || 
-		    coll.gameObject.GetComponent<Foot>().attackState == AttackState.SHOOTING)
+		    coll.gameObject.tag == "Foot")
 		{
-			Instantiate(explosion, transform.position, Quaternion.identity);
-			Destroy(this.gameObject);
-
-			Foot foot = coll.gameObject.GetComponent<Foot>();
-			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D>();
-
-			if (footRB.velocity.magnitude / foot.shotSpeedOriginal <= .3f || true)
+			if (foot.attackState == AttackState.SHOOTING || 
+			    foot.attackState == AttackState.SLOWING)
 			{
-
-			} 
-			else
-			{
-				jumpState = JumpState.KNOCKBACK;
+				Instantiate(explosion, transform.position, Quaternion.identity);
+				Destroy(this.gameObject);
 			}
 		}
 		else if (coll.gameObject.tag == "Player")

@@ -19,7 +19,10 @@ public enum AttackState
 	NORMAL
 }
 
+
 public class Foot : MonoBehaviour {
+
+	public static Foot S;
 
 	//sets up the inputState variable. 
 	//can set inputState by inputState = InputState.INPUT (or another state)
@@ -200,8 +203,15 @@ public class Foot : MonoBehaviour {
 		{
 			RotateFoot();
 			CalculateAttackStrength();
-			//SetShotPath();
-			shotPath.Ricochet(transform.position, transform.right, (maxShotDistance * attackStrength) / 2.0f);
+			if (attackStrength > 0)
+			{
+				shotPath.Ricochet(transform.position, transform.right, maxShotDistance * attackStrength);
+			}
+			else
+			{
+				shotPath.HideLine();
+			}
+
 		}
 		else if (attackState == AttackState.SHOOTING)
 		{
