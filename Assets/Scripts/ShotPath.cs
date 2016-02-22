@@ -56,14 +56,13 @@ public class ShotPath : MonoBehaviour {
 		RaycastHit2D hit = Physics2D.Raycast(segStart2D, segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
 
 		//for (int i = 1; i < numSegments; ++i)
-		if (hit.collider != null)
+		while (hit.collider != null)
 		{
 			//there will be a line ricochet, so there needs to be another line segment
 			SegmentCount(numSegments + 1);
 
 			//find where the ricochet hit
 			Vector3 hitPos = hit.point;
-			print("hitPos: " + hitPos);
 
 			//set previous line segment to end there
 			line.SetPosition(numSegments - 2, hitPos);
@@ -75,15 +74,14 @@ public class ShotPath : MonoBehaviour {
 
 			segStart = hitPos;
 			segEnd = hitPos + (ricDir3D * lengthRemaining);
-			print ("segEnd: " + segEnd);
 
 			line.SetPosition(numSegments - 1, segEnd);
 
 			segStart2D = new Vector2(segStart.x, segStart.y);
 			segEnd2D = new Vector2(segEnd.x, segEnd.y);
 
-//			ray = new Ray2D(segStart2D, segEnd2D - segStart2D);
-//			hit = Physics2D.Raycast(segStart2D, segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
+			ray = new Ray2D(segStart2D, segEnd2D - segStart2D);
+			hit = Physics2D.Raycast(segStart2D + ((segEnd2D - segStart2D) * 0.05f), segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
 		}
 	}
 

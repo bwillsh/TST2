@@ -46,12 +46,14 @@ public class Ninja : MonoBehaviour {
 	private TextMesh		turnCounter; //the number that indicates how many spots the ninja is from Tommy
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
+	private Foot			foot;
 
 	// Use this for initialization
 
 	void Start () 
 	{
 		//initialize variables
+		foot = GameObject.Find ("Foot").GetComponent<Foot>();
 		jumpState = JumpState.GROUNDED;
 		jumpPointNumber = jumpPoints.Count;
 		currentJumpPoint = jumpPointNumber - 1;
@@ -108,9 +110,7 @@ public class Ninja : MonoBehaviour {
 	//when hit by the foot or Tommy (not currently working, which is fine; easy fix)
 	void OnTriggerEnter2D (Collider2D coll)
 	{
-		if (jumpState == JumpState.GROUNDED &&
-		    coll.gameObject.tag == "Foot" && coll.gameObject.GetComponent<Foot>().attackState == AttackState.SHOOTING || 
-		    coll.gameObject.GetComponent<Foot>().attackState == AttackState.SHOOTING)
+		if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot")
 		{
 			Instantiate(explosion, transform.position, Quaternion.identity);
 			Destroy(this.gameObject);
@@ -125,7 +125,8 @@ public class Ninja : MonoBehaviour {
 			} 
 			else
 			{
-				jumpState = JumpState.KNOCKBACK;
+				Instantiate(explosion, transform.position, Quaternion.identity);
+				Destroy(this.gameObject);
 			}
 		}
 		else if (coll.gameObject.tag == "Player")

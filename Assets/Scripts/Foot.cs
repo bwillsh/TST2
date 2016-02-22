@@ -19,7 +19,10 @@ public enum AttackState
 	NORMAL
 }
 
+
 public class Foot : MonoBehaviour {
+
+	public static Foot S;
 
 	//sets up the inputState variable. 
 	//can set inputState by inputState = InputState.INPUT (or another state)
@@ -107,6 +110,7 @@ public class Foot : MonoBehaviour {
 	private List<Vector3> ricochetPoints; //the positions where the foot ricochets
 	private Vector3		returnTarget;
 	private float		distanceTraveled;
+	private HealthBar	health;
 
 	//AIMING
 	public GameObject	line; //the line direction indicator prefab
@@ -135,6 +139,7 @@ public class Foot : MonoBehaviour {
 		shotPath = line.GetComponent<ShotPath>();
 		tommy = transform.parent;
 		ricochetPoints = new List<Vector3>(); 
+		health = GameObject.Find ("Bar").GetComponent<HealthBar>();
 	}
 
 	void GetInput ()
@@ -200,8 +205,15 @@ public class Foot : MonoBehaviour {
 		{
 			RotateFoot();
 			CalculateAttackStrength();
-			//SetShotPath();
-			shotPath.Ricochet(transform.position, transform.right, (maxShotDistance * attackStrength) / 2.0f);
+			if (attackStrength > 0)
+			{
+				shotPath.Ricochet(transform.position, transform.right, maxShotDistance * attackStrength);
+			}
+			else
+			{
+				shotPath.HideLine();
+			}
+
 		}
 		else if (attackState == AttackState.SHOOTING)
 		{
