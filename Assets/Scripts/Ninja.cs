@@ -110,8 +110,7 @@ public class Ninja : MonoBehaviour {
 	//when hit by the foot or Tommy (not currently working, which is fine; easy fix)
 	void OnTriggerEnter2D (Collider2D coll)
 	{
-		if (jumpState == JumpState.GROUNDED &&
-		    coll.gameObject.tag == "Foot")
+		if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot")
 		{
 			if (foot.attackState == AttackState.SHOOTING || 
 			    foot.attackState == AttackState.SLOWING)

@@ -13,6 +13,12 @@ public class Launcher : MonoBehaviour {
 
         //Need this scene and object so GameManagers don't multiply
         //Can't start in a scene that you will later load
-        Application.LoadLevel(1);
+		StartCoroutine(LoadAfterDelay());
+	}
+
+	IEnumerator LoadAfterDelay() {
+		// oh yeah take in that splash screen
+		yield return new WaitForSeconds (2);
+		Application.LoadLevel(1);
 	}
 }

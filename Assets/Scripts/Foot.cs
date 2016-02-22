@@ -110,6 +110,7 @@ public class Foot : MonoBehaviour {
 	private List<Vector3> ricochetPoints; //the positions where the foot ricochets
 	private Vector3		returnTarget;
 	private float		distanceTraveled;
+	private HealthBar	health;
 
 	//AIMING
 	public GameObject	line; //the line direction indicator prefab
@@ -138,6 +139,7 @@ public class Foot : MonoBehaviour {
 		shotPath = line.GetComponent<ShotPath>();
 		tommy = transform.parent;
 		ricochetPoints = new List<Vector3>(); 
+		health = GameObject.Find ("Bar").GetComponent<HealthBar>();
 	}
 
 	void GetInput ()
