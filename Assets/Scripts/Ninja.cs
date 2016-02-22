@@ -110,7 +110,7 @@ public class Ninja : MonoBehaviour {
 	{
 		if (jumpState == JumpState.GROUNDED &&
 		    coll.gameObject.tag == "Foot" && coll.gameObject.GetComponent<Foot>().attackState == AttackState.SHOOTING || 
-		    coll.gameObject.GetComponent<Foot>().attackState == AttackState.SHOOTING)
+		    coll.gameObject.GetComponent<Foot>().attackState == AttackState.SLOWING)
 		{
 			Instantiate(explosion, transform.position, Quaternion.identity);
 			Destroy(this.gameObject);
