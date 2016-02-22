@@ -15,6 +15,9 @@ public class CombatController : MonoBehaviour {
 
 	public TurnState _turn;
 	public TurnState turn
+
+
+
 	{
 		get {return _turn;}
 		set 
@@ -39,11 +42,14 @@ public class CombatController : MonoBehaviour {
 
 	public List<Ninja> ninjaList;
 
+	public int NinjaCount; 
+
 	void Awake () {
 		TommysTurn();
 	}
 	// Use this for initialization
 	void Start () {
+		NinjaCount = ninjaList.Count;
 	}
 	
 	// Update is called once per frame
@@ -60,6 +66,16 @@ public class CombatController : MonoBehaviour {
 		{
 			turn = TurnState.ENEMY;
 		}
+
+		//remainingNinjas ();
+
+		if (NinjaCount == 0) 
+		{	
+			if (turn == TurnState.ENEMY) {
+				Application.LoadLevel (1);
+			}
+		}
+			
 	}
 
 	public void TommysTurn()
@@ -75,6 +91,7 @@ public class CombatController : MonoBehaviour {
 		turn = TurnState.ENEMYSTART;
 	}
 
+
 	bool NinjasDoneMoving()
 	{
 		for (int i = 0; i < ninjaList.Count; i += 1)
@@ -87,4 +104,12 @@ public class CombatController : MonoBehaviour {
 		return true;
 	}
 
+	/*int remainingNinjas()
+	{
+		for (int i = 0; i < ninjaList.Count; i += 1) {
+			if (!ninjaList[i].activeInHierarchy) {
+				--NinjaCount;
+			}
+		}
+	}	*/
 }

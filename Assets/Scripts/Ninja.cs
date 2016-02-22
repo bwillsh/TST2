@@ -11,9 +11,9 @@ public enum JumpState
 }
 
 public class Ninja : MonoBehaviour {
-
 	public JumpState 		_jumpState;
 	public JumpState		jumpState
+
 	{
 		get {return _jumpState;}
 		set 
@@ -114,6 +114,7 @@ public class Ninja : MonoBehaviour {
 		{
 			Instantiate(explosion, transform.position, Quaternion.identity);
 			Destroy(this.gameObject);
+			--combat.NinjaCount;
 
 			Foot foot = coll.gameObject.GetComponent<Foot>();
 			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D>();
