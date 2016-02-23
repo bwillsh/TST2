@@ -24,6 +24,10 @@ public class Foot : MonoBehaviour {
 
 	public static Foot S;
 
+	void Awake()
+	{
+		S = this;
+	}
 	//sets up the inputState variable. 
 	//can set inputState by inputState = InputState.INPUT (or another state)
 	public InputState 	_inputState;
@@ -125,6 +129,11 @@ public class Foot : MonoBehaviour {
 	public LayerMask	collisionMask;
 	private Transform	tommy;
 
+
+	//POWERUPS
+	public string curPower = "";
+	public int curPowerLength = -1;
+	public bool newPower = false;
 
 
 	// Use this for initialization
@@ -362,6 +371,11 @@ public class Foot : MonoBehaviour {
 			//reset Tommy to his neutral state
 			attackState = AttackState.NORMAL;
 
+			//run Power up code
+			ManagePowerUp();
+
+
+
 			//tell combat controller that tommy has finished his attack
 			combat.TommyEnd();
 		}
@@ -405,6 +419,39 @@ public class Foot : MonoBehaviour {
 		distanceTraveled += Vector2.Distance(newPosition, footPos);
 	}
 
+
+	void ManagePowerUp()
+	{
+		curPowerLength--;
+
+		if (newPower) //Handles the turning on of powerUps
+		{
+			switch (curPower) {
+			case "PlaceHolder": 
+				print ("place holder power on");
+				break;
+			}
+
+			newPower = false;
+		}
+
+		if (curPowerLength >= 0) //Handles ongoing effects, might not need
+		{
+			switch (curPower) {
+			case "PlaceHolder": 
+				print ("have placeholder power this turn");
+				break;
+			}
+		} 
+		else if (curPowerLength == -1) //Handles the turning off of powerUps
+		{
+			switch (curPower) {
+			case "PlaceHolder": 
+				print ("place holder power off");
+				break;
+			}
+		}
+	}
 
 
 }
