@@ -5,6 +5,7 @@ public class MovementController : MonoBehaviour {
 
     private Vector2 mousePos;
 
+
     //Used to figure out the hit box of the buttons
     //Created a square with size of 3x3 and covered up each of the buttons. the position of the square is the vectors below
     float squareSize = 1.5f;
@@ -36,7 +37,7 @@ public class MovementController : MonoBehaviour {
             if(mousePos.x >= buttonPos.x - squareSize && mousePos.x <= buttonPos.x + squareSize
                 && mousePos.y >= buttonPos.y - squareSize && mousePos.y <= buttonPos.y + squareSize) //Math to check to see if the mouse is inside a hit box for a button
             {
-                ButtonPressed();
+				ButtonPressed();
             }
         }
 

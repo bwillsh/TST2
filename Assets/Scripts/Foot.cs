@@ -24,6 +24,10 @@ public class Foot : MonoBehaviour {
 
 	public static Foot S;
 
+	void Awake()
+	{
+		S = this;
+	}
 	//sets up the inputState variable. 
 	//can set inputState by inputState = InputState.INPUT (or another state)
 	public InputState 	_inputState;
@@ -124,6 +128,11 @@ public class Foot : MonoBehaviour {
 	public LayerMask	collisionMask;
 	private Transform	tommy;
 	private HealthBar	health;
+
+	//POWERUPS
+	public string curPower = "";
+	public int curPowerLength = -1;
+	public bool newPower = false;
 
 
 	// Use this for initialization
@@ -242,6 +251,7 @@ public class Foot : MonoBehaviour {
 		{
 			GetInput();
 		}
+			
 	}
 
 	//updates the mousePos variable so you always knows where the mouse is on the screen
@@ -363,6 +373,9 @@ public class Foot : MonoBehaviour {
 			//reset Tommy to his neutral state
 			attackState = AttackState.NORMAL;
 
+			//run Power up code
+			ManagePowerUp();
+
 			//tell combat controller that tommy has finished his attack
 			combat.TommyEnd();
 		}
@@ -376,16 +389,10 @@ public class Foot : MonoBehaviour {
 		shotPath.SetEndPos(transform.position + (transform.right * maxShotDistance * attackStrength));
 	}
 
-	bool test = true;
-
 	void OnTriggerEnter2D(Collider2D coll)
 	{
 		if (coll.gameObject.layer == 8 && (attackState == AttackState.SHOOTING || attackState == AttackState.SLOWING))
 		{
-			if (test) {
-				print (coll.gameObject.tag);
-				test = false;
-			}
 			ricochetPoints.Add(transform.position);
 			Ray2D ray = new Ray2D(footPos, transform.right);
 			Vector2 right = new Vector2(transform.right.x, transform.right.y);
@@ -416,6 +423,45 @@ public class Foot : MonoBehaviour {
 		distanceTraveled += Vector2.Distance(newPosition, footPos);
 	}
 
+
+	void ManagePowerUp()
+	{
+		curPowerLength--;
+
+		if (newPower) //Handles the turning on of powerUps
+		{
+			switch (curPower) {
+			case "PlaceHolder": 
+				print ("place holder power on");
+				break;
+			case "BigFoot":
+				transform.localScale *= 1.6f;
+				break;
+			}
+
+			newPower = false;
+		}
+
+		if (curPowerLength >= 0) //Handles ongoing effects, might not need
+		{
+			switch (curPower) {
+			case "PlaceHolder": 
+				print ("have placeholder power this turn");
+				break;
+			}
+		} 
+		else if (curPowerLength == -1) //Handles the turning off of powerUps
+		{
+			switch (curPower) {
+			case "PlaceHolder": 
+				print ("place holder power off");
+				break;
+			case "BigFoot":
+				transform.localScale /= 1.5f;
+				break;
+			}
+		}
+	}
 
 
 }

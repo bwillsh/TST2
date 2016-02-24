@@ -11,9 +11,9 @@ public enum JumpState
 }
 
 public class Ninja : MonoBehaviour {
-
 	public JumpState 		_jumpState;
 	public JumpState		jumpState
+
 	{
 		get {return _jumpState;}
 		set 
@@ -29,7 +29,7 @@ public class Ninja : MonoBehaviour {
 				turnCounter.text = currentJumpPoint.ToString ();
 				break;
 			case JumpState.KNOCKBACK:
-				currentJumpPoint += 2;
+				currentJumpPoint += jumpPoints.Count - 1;
 				currentJumpPoint = Mathf.Clamp(currentJumpPoint, 0, jumpPointNumber - 1);
 				turnCounter.text = currentJumpPoint.ToString ();
 				break;
@@ -112,8 +112,17 @@ public class Ninja : MonoBehaviour {
 	{
 		if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot")
 		{
-			if (foot.attackState == AttackState.SHOOTING || 
-			    foot.attackState == AttackState.SLOWING)
+			Instantiate(explosion, transform.position, Quaternion.identity);
+			Destroy(this.gameObject);
+			--combat.NinjaCount;
+
+			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D>();
+
+			if (footRB.velocity.magnitude / foot.shotSpeedOriginal <= .3f || true)
+			{
+
+			} 
+			else
 			{
 				Instantiate(explosion, transform.position, Quaternion.identity);
 				Destroy(this.gameObject);

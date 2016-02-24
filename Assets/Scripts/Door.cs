@@ -1,23 +1,30 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+
+
 public class Door : MonoBehaviour {
+
 
     public string text = "I am a door!";
 	// Use this for initialization
 	void Start () {
-	
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-	
 	}
+
 
     public void Button()
     {
-        print(text);
+		Application.LoadLevel (2);
     }
 
-  
+
+
 }
+
+
+
