@@ -3,7 +3,9 @@ using System.Collections;
 
 public class HealthBar : MonoBehaviour {
 
-	float health = 1;
+	float currentHealth = 1;
+	float wantedHealth = 1;
+	public float moveRate = .01f;
 
 	// Use this for initialization
 	void Start () {
@@ -12,15 +14,32 @@ public class HealthBar : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (currentHealth > wantedHealth)
+		{
+			dropHealth();
+		}
 	}
 
 	public void lowerHealth(float n)
 	{
-		health -= n;
-		if (health < 0)
+		wantedHealth -= n;
+		if (wantedHealth < 0)
 		{
-			health = 0;
+			wantedHealth = 0;
 		}
+	}
+
+	void dropHealth()
+	{
+		currentHealth -= moveRate;
+
+		if (currentHealth < wantedHealth)
+		{
+			currentHealth = wantedHealth;
+		}
+
+		Vector3 changeScale = transform.localScale;
+		changeScale.x = currentHealth;
+		transform.localScale = changeScale;
 	}
 }

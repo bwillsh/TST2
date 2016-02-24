@@ -110,7 +110,6 @@ public class Foot : MonoBehaviour {
 	private List<Vector3> ricochetPoints; //the positions where the foot ricochets
 	private Vector3		returnTarget;
 	private float		distanceTraveled;
-	private HealthBar	health;
 
 	//AIMING
 	public GameObject	line; //the line direction indicator prefab
@@ -124,7 +123,7 @@ public class Foot : MonoBehaviour {
 	private CombatController	combat;	//the script that keeps track of combat
 	public LayerMask	collisionMask;
 	private Transform	tommy;
-
+	private HealthBar	health;
 
 
 	// Use this for initialization
@@ -236,7 +235,8 @@ public class Foot : MonoBehaviour {
 		{
 			DistanceTraveled();
 		}
-		footPos = new Vector2 (transform.position.x, transform.position.y);
+		footPos.x = transform.position.x;
+		footPos.y = transform.position.y;
 		
 		if (combat.turn == TurnState.TOMMY)
 		{
@@ -314,7 +314,7 @@ public class Foot : MonoBehaviour {
 		return (((shotSpeedOriginal * shotSpeedOriginal) / (2 * (maxShotDistance - Vector2.Distance(footPos, originalShotPos)) * attackStrength)) * .04f);
 	}
 
-	//
+
 	void ReturnFoot()
 	{
 		if (ricochetPoints.Count > 0)
@@ -332,7 +332,6 @@ public class Foot : MonoBehaviour {
 				}
 				else 
 				{
-
 					returnTarget.x = originalShotPos.x;
 					returnTarget.y = originalShotPos.y;
 					returnTarget.z = transform.position.z;
@@ -346,10 +345,12 @@ public class Foot : MonoBehaviour {
 		shotSpeedCurrent = Mathf.Lerp (shotSpeedCurrent, shotSpeedOriginal * 2, returnAccelRate * Time.deltaTime);
 		transform.position = Vector3.MoveTowards(transform.position, returnTarget, shotSpeedCurrent * Time.deltaTime);
 		//rb.velocity = -transform.right * shotSpeedCurrent;
+	
 
 		//once the foot is back to its original position
-		if ((footPos - originalShotPos).magnitude < .05f)
+		if (Vector2.Distance(footPos, originalShotPos) < .1f)
 		{
+
 			Vector3 returnPosition = new Vector3(originalShotPos.x, originalShotPos.y, -1);
 			transform.position = returnPosition;
 
@@ -375,10 +376,16 @@ public class Foot : MonoBehaviour {
 		shotPath.SetEndPos(transform.position + (transform.right * maxShotDistance * attackStrength));
 	}
 
+	bool test = true;
+
 	void OnTriggerEnter2D(Collider2D coll)
 	{
 		if (coll.gameObject.layer == 8 && (attackState == AttackState.SHOOTING || attackState == AttackState.SLOWING))
 		{
+			if (test) {
+				print (coll.gameObject.tag);
+				test = false;
+			}
 			ricochetPoints.Add(transform.position);
 			Ray2D ray = new Ray2D(footPos, transform.right);
 			Vector2 right = new Vector2(transform.right.x, transform.right.y);
@@ -389,6 +396,10 @@ public class Foot : MonoBehaviour {
 				float rot = Mathf.Atan2(ricochetDir.y, ricochetDir.x) * Mathf.Rad2Deg;
 				transform.eulerAngles = new Vector3(0, 0, rot);
 				rb.velocity = transform.right * shotSpeedCurrent;
+			}
+			if (coll.gameObject.tag == "DamageWall")
+			{
+				health.lowerHealth(0.1f);
 			}
 		}
 	}
