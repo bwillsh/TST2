@@ -37,7 +37,7 @@ public class MovementController : MonoBehaviour {
             if(mousePos.x >= buttonPos.x - squareSize && mousePos.x <= buttonPos.x + squareSize
                 && mousePos.y >= buttonPos.y - squareSize && mousePos.y <= buttonPos.y + squareSize) //Math to check to see if the mouse is inside a hit box for a button
             {
-                ButtonPressed();
+				ButtonPressed();
             }
         }
 

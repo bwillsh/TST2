@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PowerUp : MonoBehaviour {
 
+	//currently existing powerups:
+	//BigFoot
+
 	public string power = "PlaceHolder";
 	public int length = 1;
 
@@ -23,7 +26,7 @@ public class PowerUp : MonoBehaviour {
 			Foot.S.curPower = power;
 			Foot.S.curPowerLength = length;
 			Foot.S.newPower = true;
-			gameObject.SetActive (false);
+			Destroy(this.gameObject);
 		}
 
 	}

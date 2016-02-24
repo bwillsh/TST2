@@ -114,7 +114,6 @@ public class Foot : MonoBehaviour {
 	private List<Vector3> ricochetPoints; //the positions where the foot ricochets
 	private Vector3		returnTarget;
 	private float		distanceTraveled;
-	private HealthBar	health;
 
 	//AIMING
 	public GameObject	line; //the line direction indicator prefab
@@ -128,7 +127,7 @@ public class Foot : MonoBehaviour {
 	private CombatController	combat;	//the script that keeps track of combat
 	public LayerMask	collisionMask;
 	private Transform	tommy;
-
+	private HealthBar	health;
 
 	//POWERUPS
 	public string curPower = "";
@@ -245,12 +244,14 @@ public class Foot : MonoBehaviour {
 		{
 			DistanceTraveled();
 		}
-		footPos = new Vector2 (transform.position.x, transform.position.y);
+		footPos.x = transform.position.x;
+		footPos.y = transform.position.y;
 		
 		if (combat.turn == TurnState.TOMMY)
 		{
 			GetInput();
 		}
+			
 	}
 
 	//updates the mousePos variable so you always knows where the mouse is on the screen
@@ -323,7 +324,7 @@ public class Foot : MonoBehaviour {
 		return (((shotSpeedOriginal * shotSpeedOriginal) / (2 * (maxShotDistance - Vector2.Distance(footPos, originalShotPos)) * attackStrength)) * .04f);
 	}
 
-	//
+
 	void ReturnFoot()
 	{
 		if (ricochetPoints.Count > 0)
@@ -341,7 +342,6 @@ public class Foot : MonoBehaviour {
 				}
 				else 
 				{
-
 					returnTarget.x = originalShotPos.x;
 					returnTarget.y = originalShotPos.y;
 					returnTarget.z = transform.position.z;
@@ -355,10 +355,12 @@ public class Foot : MonoBehaviour {
 		shotSpeedCurrent = Mathf.Lerp (shotSpeedCurrent, shotSpeedOriginal * 2, returnAccelRate * Time.deltaTime);
 		transform.position = Vector3.MoveTowards(transform.position, returnTarget, shotSpeedCurrent * Time.deltaTime);
 		//rb.velocity = -transform.right * shotSpeedCurrent;
+	
 
 		//once the foot is back to its original position
-		if ((footPos - originalShotPos).magnitude < .05f)
+		if (Vector2.Distance(footPos, originalShotPos) < .1f)
 		{
+
 			Vector3 returnPosition = new Vector3(originalShotPos.x, originalShotPos.y, -1);
 			transform.position = returnPosition;
 
@@ -373,8 +375,6 @@ public class Foot : MonoBehaviour {
 
 			//run Power up code
 			ManagePowerUp();
-
-
 
 			//tell combat controller that tommy has finished his attack
 			combat.TommyEnd();
@@ -404,6 +404,10 @@ public class Foot : MonoBehaviour {
 				transform.eulerAngles = new Vector3(0, 0, rot);
 				rb.velocity = transform.right * shotSpeedCurrent;
 			}
+			if (coll.gameObject.tag == "DamageWall")
+			{
+				health.lowerHealth(0.1f);
+			}
 		}
 	}
 
@@ -430,6 +434,9 @@ public class Foot : MonoBehaviour {
 			case "PlaceHolder": 
 				print ("place holder power on");
 				break;
+			case "BigFoot":
+				transform.localScale *= 1.6f;
+				break;
 			}
 
 			newPower = false;
@@ -448,6 +455,9 @@ public class Foot : MonoBehaviour {
 			switch (curPower) {
 			case "PlaceHolder": 
 				print ("place holder power off");
+				break;
+			case "BigFoot":
+				transform.localScale /= 1.5f;
 				break;
 			}
 		}
