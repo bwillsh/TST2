@@ -5,7 +5,7 @@ public class Portal : MonoBehaviour {
 
 
     public int level;
-    public Vector2 location = new Vector2(0,0);
+    public Vector2 location = new Vector2(0,2.75f);
 	// Use this for initialization
 	void Start () {
 	
@@ -18,6 +18,9 @@ public class Portal : MonoBehaviour {
 
     public void Button()
     {
-        Application.LoadLevel(Application.loadedLevel);
+        print("PORTAL");
+        GameManager.S.level = level;
+        GameManager.S.backPos = location;
+        Application.LoadLevel(level);
     }
 }
