@@ -29,7 +29,7 @@ public class Ninja : MonoBehaviour {
 				turnCounter.text = currentJumpPoint.ToString ();
 				break;
 			case JumpState.KNOCKBACK:
-				currentJumpPoint += 2;
+				currentJumpPoint += jumpPoints.Count - 1;
 				currentJumpPoint = Mathf.Clamp(currentJumpPoint, 0, jumpPointNumber - 1);
 				turnCounter.text = currentJumpPoint.ToString ();
 				break;
@@ -116,7 +116,6 @@ public class Ninja : MonoBehaviour {
 			Destroy(this.gameObject);
 			--combat.NinjaCount;
 
-			Foot foot = coll.gameObject.GetComponent<Foot>();
 			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D>();
 
 			if (footRB.velocity.magnitude / foot.shotSpeedOriginal <= .3f || true)

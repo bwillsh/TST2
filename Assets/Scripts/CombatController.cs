@@ -54,6 +54,7 @@ public class CombatController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
 		if (turn == TurnState.TOMMYEND && NinjasDoneMoving())
 		{
 			EnemysTurn();
@@ -72,7 +73,7 @@ public class CombatController : MonoBehaviour {
 		if (NinjaCount == 0) 
 		{	
 			if (turn == TurnState.ENEMY) {
-				Application.LoadLevel (1);
+				Application.LoadLevel (GameManager.S.level);
 			}
 		}
 			
