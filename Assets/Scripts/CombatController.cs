@@ -73,7 +73,7 @@ public class CombatController : MonoBehaviour {
 		if (NinjaCount == 0) 
 		{	
 			if (turn == TurnState.ENEMY) {
-				Application.LoadLevel (GameManager.S.level);
+				Application.LoadLevel (1);
 			}
 		}
 			

@@ -26,13 +26,13 @@ public class GameManager : MonoBehaviour {
 	    if(Input.GetKeyDown(KeyCode.Tab))
         {
             //switches between overworld and battle scene
-            if(Application.loadedLevel == 1)
+            if(Application.loadedLevel == 2)
             {
-                Application.LoadLevel(2);
+                Application.LoadLevel(1);
             }
             else
             {
-                Application.LoadLevel(1);
+                Application.LoadLevel(2);
             }
         }
 	}
