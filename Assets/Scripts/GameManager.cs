@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour {
     //what the background position is
     //Updated each frame you move
     public Vector2 backPos = new Vector2(0, 2.75f);
+    public int level = 2;
 
 
     public static GameManager S;
