@@ -15,9 +15,6 @@ public class CombatController : MonoBehaviour {
 
 	public TurnState _turn;
 	public TurnState turn
-
-
-
 	{
 		get {return _turn;}
 		set 
@@ -42,13 +39,19 @@ public class CombatController : MonoBehaviour {
 
 	public List<Ninja> ninjaList;
 
-	public int NinjaCount; 
+	public int NinjaCount;
+
+    public bool generatedLevel = false;
 
 	void Awake () {
 		TommysTurn();
 	}
 	// Use this for initialization
 	void Start () {
+        if(generatedLevel)
+        {
+            LevelGen.S.GenLevel();
+        }
 		NinjaCount = ninjaList.Count;
 	}
 	
