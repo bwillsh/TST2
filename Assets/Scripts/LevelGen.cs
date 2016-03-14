@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LevelGen : MonoBehaviour {
 
@@ -16,6 +17,8 @@ public class LevelGen : MonoBehaviour {
     public Vector2 max = new Vector2(18.05f,13.4f);
     public Vector2 min = new Vector2(-8f, -3.1f);
     Vector2 FootPos;
+
+    public List<GameObject> wallList;
 
     public static LevelGen S;
     void Awake()
@@ -41,12 +44,6 @@ public class LevelGen : MonoBehaviour {
         float x;
         float y;
         print("Generating Level");
-        for(int i = 0; i < numWalls; i++)
-        {
-            x = Random.Range(min.x, max.x);
-            y = Random.Range(min.y, max.y);
-            Instantiate(wall, new Vector3(x, y, -1), Quaternion.Euler(0, 0, Random.Range(0,180)));
-        }
         for (int i = 0; i < numNinjas; i++)
         {
             x = Random.Range(15f, 17);
@@ -56,7 +53,7 @@ public class LevelGen : MonoBehaviour {
             clone.jumpPoints.Add(npoint.transform);
             float jx = x;
             float dec = (x - Foot.S.transform.position.x) / numJumps;
-            for(int j = 1; j < numJumps; j++)
+            for (int j = 1; j < numJumps; j++)
             {
                 jx -= dec;
                 float jy = Random.Range(min.y, max.y);
@@ -69,5 +66,56 @@ public class LevelGen : MonoBehaviour {
             combat.ninjaList.Add(clone);
 
         }
+        int tryCount = 0;
+        for (int i = 0; i < numWalls; i++)
+        {
+            x = Random.Range(min.x, max.x);
+            y = Random.Range(min.y, max.y);
+            bool good = false;
+            while(!good)
+            {
+                x = Random.Range(min.x, max.x);
+                y = Random.Range(min.y, max.y);
+                good = true;
+                foreach(Ninja n in combat.ninjaList)
+                {
+                    foreach(Transform t in n.jumpPoints)
+                    {
+                        float x2 = t.position.x;
+                        float y2 = t.position.y;
+                        float dist = Mathf.Sqrt(Mathf.Pow(x2 - x, 2) + Mathf.Pow(y2 - y, 2));
+                        if (dist < 3)
+                            good = false;
+                    }
+                    
+                }
+                foreach (GameObject n in wallList)
+                {
+                    float x2 = n.transform.position.x;
+                    float y2 = n.transform.position.y;
+                    float dist = Mathf.Sqrt(Mathf.Pow(x2 - x, 2) + Mathf.Pow(y2 - y, 2));
+                    if (dist < 3)
+                        good = false;
+                }
+                if(!good)
+                {
+                    print("not good: " + i);
+                    tryCount++;
+                    if (tryCount > 10)
+                        break;
+                }
+                
+            }
+            if(good)
+            {
+                wallList.Add((GameObject)Instantiate(wall, new Vector3(x, y, -1), Quaternion.Euler(0, 0, Random.Range(0, 180))));
+                tryCount = 0;
+            }
+            else
+            {
+                i = numWalls + 10;
+            }
+        }
+        
     }
 }
