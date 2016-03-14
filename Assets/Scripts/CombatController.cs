@@ -43,7 +43,11 @@ public class CombatController : MonoBehaviour {
 
     public bool generatedLevel = false;
 
-	void Awake () {
+    public GameObject ItemDrop;
+	public Vector3 ItemDropPosition;
+
+
+    void Awake () {
 		TommysTurn();
 	}
 	// Use this for initialization
@@ -79,8 +83,8 @@ public class CombatController : MonoBehaviour {
                 if (generatedLevel)
                     Application.LoadLevel(Application.loadedLevel);
                 else
-                    Application.LoadLevel(GameManager.S.level);
-			}
+                    Instantiate(ItemDrop, transform.position, Quaternion.identity);
+            }
 		}
 			
 	}
