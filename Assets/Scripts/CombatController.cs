@@ -43,6 +43,9 @@ public class CombatController : MonoBehaviour {
 
     public bool generatedLevel = false;
 
+	public GameObject ItemDrop;
+	public Vector3 ItemDropPosition;
+
 	void Awake () {
 		TommysTurn();
 	}
@@ -76,7 +79,7 @@ public class CombatController : MonoBehaviour {
 		if (NinjaCount == 0) 
 		{	
 			if (turn == TurnState.ENEMY) {
-				Application.LoadLevel (GameManager.S.level);
+				Instantiate (ItemDrop, transform.position, Quaternion.identity);
 			}
 		}
 			
