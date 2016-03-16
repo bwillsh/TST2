@@ -55,9 +55,10 @@ public class ShotPath : MonoBehaviour {
 		Ray2D ray = new Ray2D(segStart2D, segEnd2D - segStart2D);
 		RaycastHit2D hit = Physics2D.Raycast(segStart2D, segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
 
-		//for (int i = 1; i < numSegments; ++i)
-		while (hit.collider != null)
+		int infiniteLoopBlocker = 0;
+		while (hit.collider != null && infiniteLoopBlocker < 10)
 		{
+			++infiniteLoopBlocker;
 			//there will be a line ricochet, so there needs to be another line segment
 			SegmentCount(numSegments + 1);
 

@@ -15,9 +15,6 @@ public class CombatController : MonoBehaviour {
 
 	public TurnState _turn;
 	public TurnState turn
-
-
-
 	{
 		get {return _turn;}
 		set 
@@ -104,13 +101,4 @@ public class CombatController : MonoBehaviour {
 		}
 		return true;
 	}
-
-	/*int remainingNinjas()
-	{
-		for (int i = 0; i < ninjaList.Count; i += 1) {
-			if (!ninjaList[i].activeInHierarchy) {
-				--NinjaCount;
-			}
-		}
-	}	*/
 }

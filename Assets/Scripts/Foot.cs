@@ -65,6 +65,7 @@ public class Foot : MonoBehaviour {
 			case AttackState.NORMAL:
 				break;
 			case AttackState.CHARGING:
+				originalTouchPoint = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, -10.0f));
 				break;
 			case AttackState.SHOOTING:
 				originalShotPos = footPos;
@@ -101,6 +102,7 @@ public class Foot : MonoBehaviour {
 	//CHARGING
 	public float		maxChargeRadius; //how far back you can pull the foot before the charge maxes out
 	public float		selectFootRadius; //how close you must click to the foot to grab it
+	public Vector3		originalTouchPoint = Vector3.zero;
 
 	//SHOOTING AND RETURNING
 	public float		maxShotDistance; //the maximum distance the foot can travel
@@ -158,10 +160,10 @@ public class Foot : MonoBehaviour {
 			{
 				//if the mouse is now being pressed
 				inputState = InputState.INPUT;
-				UpdateMousePos();
 
+				UpdateMousePos();
 				//if you are not attacking and are clicking within selectFootRadius
-				if (attackState == AttackState.NORMAL && Vector2.Distance(mousePos, footPos) <= selectFootRadius)
+				if (attackState == AttackState.NORMAL/* && Vector2.Distance(mousePos, footPos) <= selectFootRadius*/)
 				{
 					attackState = AttackState.CHARGING;
 				}
@@ -265,12 +267,12 @@ public class Foot : MonoBehaviour {
 	//Some of this code is taken from online
 	void RotateFoot() 
 	{
-		Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+		Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - originalTouchPoint;
 		diff.Normalize();
 		
-		float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+		float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 180;
 
-		rot_z = diff.x <= 0 ? rot_z - 180 : rot_z;
+		//rot_z = diff.x <= 0 ? rot_z - 180 : rot_z;
 
 		transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
 	}
@@ -278,10 +280,11 @@ public class Foot : MonoBehaviour {
 	//sets attackStrength to a float 0-1 to represent to attack strength, 0 being no power, 1 being full power
 	void CalculateAttackStrength() 
 	{
-		float distanceFromTouchToFoot = Vector2.Distance(mousePos, footPos);
+		Vector2 originalTouchPoint2D = new Vector2(originalTouchPoint.x, originalTouchPoint.y);
+		float distanceFromTouchToFoot = Vector2.Distance(mousePos, originalTouchPoint2D);
 
 		float strength = distanceFromTouchToFoot > maxChargeRadius ? 1 : distanceFromTouchToFoot / maxChargeRadius;
-		attackStrength = mousePos.x > transform.position.x ? -1 : strength;
+		attackStrength = /*mousePos.x > transform.position.x ? -1 :*/ strength;
 
 	}
 
@@ -462,6 +465,5 @@ public class Foot : MonoBehaviour {
 			}
 		}
 	}
-
 
 }
