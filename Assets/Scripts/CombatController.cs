@@ -39,13 +39,23 @@ public class CombatController : MonoBehaviour {
 
 	public List<Ninja> ninjaList;
 
-	public int NinjaCount; 
+	public int NinjaCount;
 
-	void Awake () {
+    public bool generatedLevel = false;
+
+    public GameObject ItemDrop;
+	public Vector3 ItemDropPosition;
+
+
+    void Awake () {
 		TommysTurn();
 	}
 	// Use this for initialization
 	void Start () {
+        if(generatedLevel)
+        {
+            LevelGen.S.GenLevel();
+        }
 		NinjaCount = ninjaList.Count;
 	}
 	
@@ -70,8 +80,11 @@ public class CombatController : MonoBehaviour {
 		if (NinjaCount == 0) 
 		{	
 			if (turn == TurnState.ENEMY) {
-				Application.LoadLevel (GameManager.S.level);
-			}
+                if (generatedLevel)
+                    Application.LoadLevel(Application.loadedLevel);
+                else
+                    Instantiate(ItemDrop, transform.position, Quaternion.identity);
+            }
 		}
 			
 	}

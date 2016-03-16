@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 
@@ -7,6 +8,7 @@ public class GameManager : MonoBehaviour {
     //Updated each frame you move
     public Vector2 backPos = new Vector2(0, 2.75f);
     public int level = 2;
+	public List<string> inventory;
 
 
     public static GameManager S;
@@ -35,5 +37,13 @@ public class GameManager : MonoBehaviour {
                 Application.LoadLevel(1);
             }
         }
+	}
+
+	public void AddItem(string item)
+	{
+		if (!inventory.Contains (item))
+		{
+			inventory.Add (item);
+		}
 	}
 }

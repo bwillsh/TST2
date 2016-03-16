@@ -123,6 +123,10 @@ public class Ninja : MonoBehaviour {
 			Instantiate(explosion, transform.position, Quaternion.identity);
 			Destroy(this.gameObject);
 			--combat.NinjaCount;
+			if (combat.NinjaCount == 0)
+			{
+				combat.ItemDropPosition = transform.position;
+			}
 
 			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D>();
 
