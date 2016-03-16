@@ -66,8 +66,8 @@ public class LevelGen : MonoBehaviour {
 
         combat = GameObject.Find("CombatController").GetComponent<CombatController>();
         FootPos = Foot.S.transform.position;
-        float x;
-        float y;
+        float x = 0;
+        float y = 0;
 
         print("Generating Level");
         for (int i = 0; i < numNinjas; i++)
