@@ -55,7 +55,7 @@ public class ShotPath : MonoBehaviour {
 		Ray2D ray = new Ray2D(segStart2D, segEnd2D - segStart2D);
 		RaycastHit2D hit = Physics2D.Raycast(segStart2D, segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
 
-		int infiniteLoopBlocker = 0;
+		int infiniteLoopBlocker = 0; //sometimes the line goes into an infinite loop. This will stop it
 		while (hit.collider != null && infiniteLoopBlocker < 10)
 		{
 			++infiniteLoopBlocker;

@@ -63,12 +63,15 @@ public class Foot : MonoBehaviour {
 			switch(_attackState)
 			{
 			case AttackState.NORMAL:
+				
 				break;
 			case AttackState.CHARGING:
 				originalTouchPoint = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, -10.0f));
 				break;
 			case AttackState.SHOOTING:
 				originalShotPos = footPos;
+				originalShotPos3D = transform.position;
+				attackAngle = Vector3.right;
 				rb.velocity = transform.right * shotSpeedCurrent;
 				break;
 			case AttackState.SLOWING:
@@ -111,6 +114,8 @@ public class Foot : MonoBehaviour {
 	private float		shotSpeedCurrent; //the current speed of the foot
 	public float		returnAccelRate; //how quickly the foot accelerates when returning to Tommy
 	private Vector2		originalShotPos; //where the foot was positioned at the beginning of the shot
+	private Vector3 	originalShotPos3D;
+	private Vector3		attackAngle;
 	private float		attackStrength; //the charge converted to a decimal [0, 1]
 	private float		deceleration; //by how much the foot decelerates at the tip of the attack
 	private List<Vector3> ricochetPoints; //the positions where the foot ricochets
@@ -130,6 +135,7 @@ public class Foot : MonoBehaviour {
 	public LayerMask	collisionMask;
 	private Transform	tommy;
 	private HealthBar	health;
+	private SpriteRenderer sprend;
 
 	//POWERUPS
 	public string curPower = "";
@@ -150,6 +156,7 @@ public class Foot : MonoBehaviour {
 		tommy = transform.parent;
 		ricochetPoints = new List<Vector3>(); 
 		health = GameObject.Find ("Bar").GetComponent<HealthBar>();
+		sprend = GetComponent<SpriteRenderer>();
 	}
 
 	void GetInput ()
@@ -228,14 +235,17 @@ public class Foot : MonoBehaviour {
 		else if (attackState == AttackState.SHOOTING)
 		{
 			ShootFoot();
+			//shotPath.Ricochet(originalShotPos3D, attackAngle, maxShotDistance * attackStrength);
 		}
 		else if (attackState == AttackState.RETURNING)
 		{
 			ReturnFoot();
+
 		}
 		else if (attackState == AttackState.SLOWING)
 		{
 			SlowFoot();
+			//shotPath.Ricochet(originalShotPos3D, attackAngle, maxShotDistance * attackStrength);
 		}
 		RotationCheck();
 	}
@@ -429,6 +439,7 @@ public class Foot : MonoBehaviour {
 
 	void ManagePowerUp()
 	{
+		float bigFootSize = 2;
 		curPowerLength--;
 
 		if (newPower) //Handles the turning on of powerUps
@@ -438,7 +449,7 @@ public class Foot : MonoBehaviour {
 				print ("place holder power on");
 				break;
 			case "BigFoot":
-				transform.localScale *= 1.6f;
+				transform.localScale *= bigFootSize;
 				break;
 			}
 
@@ -460,7 +471,7 @@ public class Foot : MonoBehaviour {
 				print ("place holder power off");
 				break;
 			case "BigFoot":
-				transform.localScale /= 1.5f;
+				transform.localScale /= bigFootSize;
 				break;
 			}
 		}
