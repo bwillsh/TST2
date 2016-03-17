@@ -63,7 +63,10 @@ public class Foot : MonoBehaviour {
 			switch(_attackState)
 			{
 			case AttackState.NORMAL:
-				
+				if (hasItem)
+				{
+					Application.LoadLevel (GameManager.S.level);
+				}
 				break;
 			case AttackState.CHARGING:
 				originalTouchPoint = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, -10.0f));
@@ -141,6 +144,7 @@ public class Foot : MonoBehaviour {
 	public string curPower = "";
 	public int curPowerLength = -1;
 	public bool newPower = false;
+	public bool hasItem = false;
 
 
 	// Use this for initialization

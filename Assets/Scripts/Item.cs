@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Item : MonoBehaviour {
 
-	public string name;
+	public string item_name;
 
 	// Use this for initialization
 	void Start () {
@@ -19,10 +19,10 @@ public class Item : MonoBehaviour {
 	{
 		if (coll.gameObject.tag == "Foot")
 		{
-			GameManager.S.AddItem (name);
-			print ("Added item to inventory");
-//			Destroy (this.gameObject);
-			Application.LoadLevel (GameManager.S.level);
+			Foot.S.hasItem = true;
+			this.gameObject.transform.parent = Foot.S.transform;
+			GetComponent<BoxCollider2D> ().enabled = false;
+			GameManager.S.currentItem = item_name;
 		}
 	}
 }

@@ -80,10 +80,12 @@ public class CombatController : MonoBehaviour {
 		if (NinjaCount == 0) 
 		{	
 			if (turn == TurnState.ENEMY) {
-                if (generatedLevel)
-                    Application.LoadLevel(Application.loadedLevel);
-                else
-                    Instantiate(ItemDrop, transform.position, Quaternion.identity);
+				if (generatedLevel)
+					Application.LoadLevel (Application.loadedLevel);
+				else if (ItemDrop != null)
+					Instantiate (ItemDrop, ItemDropPosition, Quaternion.identity);
+				else
+					Application.LoadLevel (GameManager.S.level);
             }
 		}
 			
