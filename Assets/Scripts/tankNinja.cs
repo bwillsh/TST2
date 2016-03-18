@@ -17,6 +17,9 @@ public class tankNinja : MonoBehaviour {
 			case JumpState.GROUNDED:
 				break;
 			case JumpState.STUNNED:
+				if (currentJumpPoint != jumpPoints.Count - 1) {
+					currentJumpPoint += 1;
+				}
 				break;
 			case JumpState.FORWARD:
 				currentJumpPoint -= 1;
@@ -115,7 +118,7 @@ public class tankNinja : MonoBehaviour {
 	{	
 		//don't knock back if on last jump point, knock back on first hit
 		if (currentJumpPoint != jumpPoints.Count - 1 && stunned_turns == 0) {
-			transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint + 1].position, jumpSpeed * 2 * Time.deltaTime);
+			transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
 		}
 			
 		//stay stunned for 3 turns
