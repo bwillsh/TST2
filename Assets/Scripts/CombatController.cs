@@ -15,9 +15,6 @@ public class CombatController : MonoBehaviour {
 
 	public TurnState _turn;
 	public TurnState turn
-
-
-
 	{
 		get {return _turn;}
 		set 
@@ -42,14 +39,26 @@ public class CombatController : MonoBehaviour {
 
 	public List<Ninja> ninjaList;
 
-	public int NinjaCount; 
+	public int NinjaCount;
 
-	void Awake () {
+    public bool generatedLevel = false;
+
+    public GameObject ItemDrop;
+	public Vector3 ItemDropPosition;
+
+
+    void Awake () {
 		TommysTurn();
 	}
 	// Use this for initialization
 	void Start () {
-		NinjaCount = ninjaList.Count;
+        if(generatedLevel)
+        {
+            LevelGen.S.GenLevel();
+        }
+		for (int i = 0; i < ninjaList.Count; ++i) {
+			++NinjaCount;
+		}
 	}
 	
 	// Update is called once per frame
@@ -73,8 +82,12 @@ public class CombatController : MonoBehaviour {
 		if (NinjaCount == 0) 
 		{	
 			if (turn == TurnState.ENEMY) {
-				Application.LoadLevel (1);
-			}
+
+                if (generatedLevel)
+                    Application.LoadLevel(Application.loadedLevel);
+                else
+                    Instantiate(ItemDrop, transform.position, Quaternion.identity);
+            }
 		}
 			
 	}
@@ -104,13 +117,4 @@ public class CombatController : MonoBehaviour {
 		}
 		return true;
 	}
-
-	/*int remainingNinjas()
-	{
-		for (int i = 0; i < ninjaList.Count; i += 1) {
-			if (!ninjaList[i].activeInHierarchy) {
-				--NinjaCount;
-			}
-		}
-	}	*/
 }

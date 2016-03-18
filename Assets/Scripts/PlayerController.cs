@@ -4,6 +4,8 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
     public GameObject cur = null;
+	public Animator anim;
+	public bool facingRight = true;
 
     public static PlayerController S;
     void Awake()
@@ -12,7 +14,7 @@ public class PlayerController : MonoBehaviour {
     }
 	// Use this for initialization
 	void Start () {
-	
+		anim = GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -46,4 +48,18 @@ public class PlayerController : MonoBehaviour {
             return;
         cur.SendMessage("Button");
     }
+
+	public void Flip()
+	{
+		facingRight = !facingRight;
+		Vector3 scale = transform.localScale;
+		scale.x *= -1;
+		transform.localScale = scale;
+	}
+
+	public void Move(bool moving)
+	{
+		anim.SetBool("Moving", moving);
+	}
+
 }

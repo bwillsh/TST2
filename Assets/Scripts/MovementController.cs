@@ -47,13 +47,23 @@ public class MovementController : MonoBehaviour {
                 && mousePos.y >= leftPos.y - squareSize && mousePos.y <= leftPos.y + squareSize)//More math
             {
                 GoLeft();
+				if (PlayerController.S.facingRight) PlayerController.S.Flip();
+				if (!PlayerController.S.anim.GetBool("Moving")) PlayerController.S.Move(true);
+				
             }
-            if (mousePos.x >= rightPos.x - squareSize && mousePos.x <= rightPos.x + squareSize
+            else if (mousePos.x >= rightPos.x - squareSize && mousePos.x <= rightPos.x + squareSize
                 && mousePos.y >= rightPos.y - squareSize && mousePos.y <= rightPos.y + squareSize)
             {
                 GoRight();
+				if (!PlayerController.S.facingRight) PlayerController.S.Flip();
+				if (!PlayerController.S.anim.GetBool("Moving")) PlayerController.S.Move(true);
             }
         }
+
+		if (Input.GetMouseButtonUp(0))
+		{
+			PlayerController.S.Move(false);
+		}
     }
 
     void UpdateMousePos()

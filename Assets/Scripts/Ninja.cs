@@ -7,7 +7,9 @@ public enum JumpState
 {
 	GROUNDED,
 	FORWARD,
-	KNOCKBACK
+	KNOCKBACK,
+	STUNNED
+
 }
 
 public class Ninja : MonoBehaviour {
@@ -26,12 +28,12 @@ public class Ninja : MonoBehaviour {
 				break;
 			case JumpState.FORWARD:
 				currentJumpPoint -= 1;
-				turnCounter.text = currentJumpPoint.ToString ();
+				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
 				break;
 			case JumpState.KNOCKBACK:
 				currentJumpPoint += jumpPoints.Count - 1;
-				currentJumpPoint = Mathf.Clamp(currentJumpPoint, 0, jumpPointNumber - 1);
-				turnCounter.text = currentJumpPoint.ToString ();
+				currentJumpPoint = Mathf.Clamp(currentJumpPoint, 0, numberOfJumpPoints - 1);
+				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
 				break;
 			default:
 				break;
@@ -40,10 +42,10 @@ public class Ninja : MonoBehaviour {
 	}
 
 	public List<Transform>  jumpPoints; //a list of empty Transforms for the ninja to jump to
-	public int				jumpPointNumber; //the total number of jump points for this ninja
+	public List<TurnCounter> turnCounter;
+	public int				numberOfJumpPoints; //the total number of jump points for this ninja
 	public int				currentJumpPoint; //which jump point the ninja is currently on
 	public float			jumpSpeed; //the speed to jump between positions
-	private TextMesh		turnCounter; //the number that indicates how many spots the ninja is from Tommy
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
 	private Foot			foot;
@@ -55,17 +57,25 @@ public class Ninja : MonoBehaviour {
 		//initialize variables
 		foot = GameObject.Find ("Foot").GetComponent<Foot>();
 		jumpState = JumpState.GROUNDED;
-		jumpPointNumber = jumpPoints.Count;
-		currentJumpPoint = jumpPointNumber - 1;
-		for (int i = 0; i < jumpPointNumber; i += 1)
+		numberOfJumpPoints = jumpPoints.Count;
+		currentJumpPoint = numberOfJumpPoints - 1;
+		for (int i = 0; i < numberOfJumpPoints; i += 1)
 		{
 			Vector3 temp = jumpPoints[i].position;
 			temp.z = transform.position.z;
 			jumpPoints[i].position = temp;
 		}
-		turnCounter = GetComponentInChildren<TextMesh>();
-		turnCounter.text = currentJumpPoint.ToString ();
-
+		foreach (Transform child in transform)
+		{
+			if (child.GetComponent<TurnCounter>() != null)
+			{
+				turnCounter.Add(child.GetComponent<TurnCounter>());
+			}
+		}
+		if (turnCounter.Count > 0)
+		{
+			turnCounter[0].TurnOn();
+		}
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
 	}
 	
@@ -115,6 +125,10 @@ public class Ninja : MonoBehaviour {
 			Instantiate(explosion, transform.position, Quaternion.identity);
 			Destroy(this.gameObject);
 			--combat.NinjaCount;
+			if (combat.NinjaCount == 0)
+			{
+				combat.ItemDropPosition = transform.position;
+			}
 
 			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D>();
 
@@ -131,6 +145,26 @@ public class Ninja : MonoBehaviour {
 		else if (coll.gameObject.tag == "Player")
 		{
 			jumpState = JumpState.KNOCKBACK;
+		}
+			
+	}
+	void TurnOnTurnCounter(int n)
+	{
+		if (n > turnCounter.Count)
+		{
+			n = turnCounter.Count;
+		}
+
+		for (int i = 0; i < turnCounter.Count; ++i)
+		{
+			if (i < n)
+			{
+				turnCounter[i].TurnOn();
+			}
+			else 
+			{
+				turnCounter[i].TurnOff();
+			}
 		}
 	}
 }
