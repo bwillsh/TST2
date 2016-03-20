@@ -56,7 +56,9 @@ public class CombatController : MonoBehaviour {
         {
             LevelGen.S.GenLevel();
         }
-		NinjaCount = ninjaList.Count;
+		for (int i = 0; i < ninjaList.Count; ++i) {
+			++NinjaCount;
+		}
 	}
 	
 	// Update is called once per frame
@@ -80,6 +82,7 @@ public class CombatController : MonoBehaviour {
 		if (NinjaCount == 0) 
 		{	
 			if (turn == TurnState.ENEMY) {
+
 				if (generatedLevel)
 					Application.LoadLevel (Application.loadedLevel);
 				else if (ItemDrop != null)

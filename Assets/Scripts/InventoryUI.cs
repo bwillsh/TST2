@@ -12,9 +12,11 @@ public class InventoryUI : MonoBehaviour {
 		case "Key":
 			print ("Display key sprite.");
 			GetComponent<Image> ().sprite = keySprite;
+			GetComponent<Image> ().enabled = true;
 			break;
 		default:
 			print ("No item.");
+			GetComponent<Image> ().enabled = false;
 			break;
 		}
 	}

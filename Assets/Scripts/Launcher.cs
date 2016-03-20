@@ -18,7 +18,8 @@ public class Launcher : MonoBehaviour {
 
 	IEnumerator LoadAfterDelay() {
 		// oh yeah take in that splash screen
+
 		yield return new WaitForSeconds (1);
-		Application.LoadLevel(2);
+		Application.LoadLevel("Menu");
 	}
 }

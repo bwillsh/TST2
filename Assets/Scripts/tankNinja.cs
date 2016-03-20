@@ -3,19 +3,9 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-public enum JumpState
-{
-	GROUNDED,
-	FORWARD,
-	KNOCKBACK,
-	STUNNED
-
-}
-
-public class Ninja : MonoBehaviour {
+public class tankNinja : MonoBehaviour {
 	public JumpState 		_jumpState;
 	public JumpState		jumpState
-
 	{
 		get {return _jumpState;}
 		set 
@@ -26,14 +16,17 @@ public class Ninja : MonoBehaviour {
 			{
 			case JumpState.GROUNDED:
 				break;
+			case JumpState.STUNNED:
+				if (currentJumpPoint != jumpPoints.Count - 1) {
+					currentJumpPoint += 1;
+				}
+				break;
 			case JumpState.FORWARD:
 				currentJumpPoint -= 1;
-				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
 				break;
 			case JumpState.KNOCKBACK:
 				currentJumpPoint += jumpPoints.Count - 1;
 				currentJumpPoint = Mathf.Clamp(currentJumpPoint, 0, numberOfJumpPoints - 1);
-				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
 				break;
 			default:
 				break;
@@ -49,11 +42,16 @@ public class Ninja : MonoBehaviour {
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
 	private Foot			foot;
+	private bool stunned = false;
+	public int stunned_turns = 0;
 
 	// Use this for initialization
 
 	void Start () 
 	{
+		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
+		++combat.NinjaCount;
+
 		//initialize variables
 		foot = GameObject.Find ("Foot").GetComponent<Foot>();
 		jumpState = JumpState.GROUNDED;
@@ -72,35 +70,33 @@ public class Ninja : MonoBehaviour {
 				turnCounter.Add(child.GetComponent<TurnCounter>());
 			}
 		}
-		if (turnCounter.Count > 0)
-		{
-			turnCounter[0].TurnOn();
-		}
-		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
 	}
-	
+
 	// Update is called once per frame
 	void Update () 
 	{
-
+		TurnOnTurnCounter (numberOfJumpPoints - currentJumpPoint);
 		if (combat.turn == TurnState.ENEMYSTART)
-		{
-			jumpState = JumpState.FORWARD;
+		{	
+			if (!stunned) {
+				jumpState = JumpState.FORWARD;
+			}
 		}
-		if (jumpState == JumpState.FORWARD)
-		{
-			JumpForward();
+		if (jumpState == JumpState.FORWARD) {
+			JumpForward ();
+		} else if (jumpState == JumpState.KNOCKBACK) {
+			Knockback ();
 		}
-		else if (jumpState == JumpState.KNOCKBACK)
-		{
-			Knockback();
+		if (jumpState == JumpState.STUNNED) {
+			Stunned ();
 		}
+			
 	}
 
 	//move Ninja to next jump point
 	void JumpForward()
-	{
-		transform.position = Vector3.MoveTowards(transform.position, jumpPoints[currentJumpPoint].position, jumpSpeed * Time.deltaTime);
+	{	
+		transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * Time.deltaTime);
 		if (transform.position == jumpPoints[currentJumpPoint].position)
 		{
 			jumpState = JumpState.GROUNDED;
@@ -109,44 +105,63 @@ public class Ninja : MonoBehaviour {
 
 	//move ninja to a previous jump point
 	void Knockback()
-	{
-		transform.position = Vector3.MoveTowards(transform.position, jumpPoints[currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
+	{	
+		transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
 		if (transform.position == jumpPoints[currentJumpPoint].position)
 		{
 			jumpState = JumpState.GROUNDED;
 		}
 	}
 
+	
+	void Stunned()
+	{	
+		//don't knock back if on last jump point, knock back on first hit
+		if (currentJumpPoint != jumpPoints.Count - 1 && stunned_turns == 0) {
+			transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
+		}
+			
+		//stay stunned for 3 turns
+		if (combat.turn == TurnState.ENEMYSTART) {
+			++stunned_turns;
+			Debug.Log (stunned_turns);
+		}
+		if(stunned_turns == 3){
+			jumpState = JumpState.GROUNDED;
+			stunned_turns = 0;
+			stunned = false;
+		}
+	}
+
 	//when hit by the foot or Tommy (not currently working, which is fine; easy fix)
 	void OnTriggerEnter2D (Collider2D coll)
 	{
-		if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot")
-		{
-			Instantiate(explosion, transform.position, Quaternion.identity);
-			Destroy(this.gameObject);
+		if (jumpState == JumpState.STUNNED && coll.gameObject.tag == "Foot" && stunned_turns > 0) {
+			Instantiate (explosion, transform.position, Quaternion.identity);
+			Destroy (this.gameObject);
 			--combat.NinjaCount;
-			if (combat.NinjaCount == 0)
-			{
+			if (combat.NinjaCount == 0) {
 				combat.ItemDropPosition = transform.position;
 			}
 
-			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D>();
+			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D> ();
 
-			if (footRB.velocity.magnitude / foot.shotSpeedOriginal <= .3f || true)
-			{
+			if (footRB.velocity.magnitude / foot.shotSpeedOriginal <= .3f || true) {
 
-			} 
-			else
-			{
-				Instantiate(explosion, transform.position, Quaternion.identity);
-				Destroy(this.gameObject);
+			} else {
+				Instantiate (explosion, transform.position, Quaternion.identity);
+				Destroy (this.gameObject);
 			}
+		} else if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot" && !stunned) { 
+			Debug.Log ("stunned");
+			stunned = true;
+			jumpState = JumpState.STUNNED;
 		}
 		else if (coll.gameObject.tag == "Player")
 		{
 			jumpState = JumpState.KNOCKBACK;
 		}
-			
+
 	}
 	void TurnOnTurnCounter(int n)
 	{
@@ -168,3 +183,4 @@ public class Ninja : MonoBehaviour {
 		}
 	}
 }
+	
