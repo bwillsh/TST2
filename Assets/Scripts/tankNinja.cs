@@ -15,13 +15,16 @@ public class tankNinja : MonoBehaviour {
 			switch(_jumpState)
 			{
 			case JumpState.GROUNDED:
+				
 				break;
 			case JumpState.STUNNED:
-				if (currentJumpPoint != jumpPoints.Count - 1) {
-					currentJumpPoint += 1;
-				}
+				anim.SetInteger("State", 3);
+//				if (currentJumpPoint != jumpPoints.Count - 1) {
+//					currentJumpPoint += 1;
+//				}
 				break;
 			case JumpState.FORWARD:
+				anim.SetInteger("State", 1);
 				currentJumpPoint -= 1;
 				break;
 			case JumpState.KNOCKBACK:
@@ -42,13 +45,14 @@ public class tankNinja : MonoBehaviour {
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
 	private Foot			foot;
-	private bool stunned = false;
 	public int stunned_turns = 0;
+	private Animator anim;
 
 	// Use this for initialization
 
 	void Start () 
 	{
+		anim = GetComponent<Animator>();
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
 		++combat.NinjaCount;
 
@@ -78,7 +82,7 @@ public class tankNinja : MonoBehaviour {
 		TurnOnTurnCounter (numberOfJumpPoints - currentJumpPoint);
 		if (combat.turn == TurnState.ENEMYSTART)
 		{	
-			if (!stunned) {
+			if (jumpState != JumpState.STUNNED) {
 				jumpState = JumpState.FORWARD;
 			}
 		}
@@ -100,6 +104,7 @@ public class tankNinja : MonoBehaviour {
 		if (transform.position == jumpPoints[currentJumpPoint].position)
 		{
 			jumpState = JumpState.GROUNDED;
+			anim.SetInteger("State", 2);
 		}
 	}
 
@@ -110,26 +115,21 @@ public class tankNinja : MonoBehaviour {
 		if (transform.position == jumpPoints[currentJumpPoint].position)
 		{
 			jumpState = JumpState.GROUNDED;
+			anim.SetInteger("State", 2);
 		}
 	}
 
 	
 	void Stunned()
 	{	
-		//don't knock back if on last jump point, knock back on first hit
-		if (currentJumpPoint != jumpPoints.Count - 1 && stunned_turns == 0) {
-			transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
-		}
-
-		//stay stunned for 3 turns
+		//stay stunned for 2 turns
 		if (combat.turn == TurnState.ENEMYSTART) {
 			++stunned_turns;
-			Debug.Log (stunned_turns);
+			//Debug.Log (stunned_turns);
 		}
-		if(stunned_turns == 3){
-			jumpState = JumpState.GROUNDED;
+		if(stunned_turns == 2) {
+			jumpState = JumpState.FORWARD;
 			stunned_turns = 0;
-			stunned = false;
 		}
 	}
 
@@ -143,18 +143,10 @@ public class tankNinja : MonoBehaviour {
 			if (combat.NinjaCount == 0) {
 				combat.ItemDropPosition = transform.position;
 			}
+			Instantiate (explosion, transform.position, Quaternion.identity);
+			Destroy (this.gameObject);
 
-			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D> ();
-
-			if (footRB.velocity.magnitude / foot.shotSpeedOriginal <= .3f || true) {
-
-			} else {
-				Instantiate (explosion, transform.position, Quaternion.identity);
-				Destroy (this.gameObject);
-			}
-		} else if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot" && !stunned) { 
-			Debug.Log ("stunned");
-			stunned = true;
+		} else if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot") { 
 			jumpState = JumpState.STUNNED;
 		}
 		else if (coll.gameObject.tag == "Player")
@@ -181,6 +173,11 @@ public class tankNinja : MonoBehaviour {
 				turnCounter[i].TurnOff();
 			}
 		}
+	}
+
+	void GoToIdle()
+	{
+		anim.SetInteger("State", 0);
 	}
 }
 	
