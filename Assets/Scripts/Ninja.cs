@@ -115,7 +115,6 @@ public class Ninja : MonoBehaviour {
 	//move ninja to a previous jump point
 	void Knockback()
 	{
-		print ("HERERER");
 		transform.position = Vector3.MoveTowards(transform.position, jumpPoints[currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
 		if (transform.position == jumpPoints[currentJumpPoint].position)
 		{
@@ -177,6 +176,7 @@ public class Ninja : MonoBehaviour {
 	void BackToIdle()
 	{
 		anim.SetInteger("State", 0);
+		Flip();
 	}
 
 	void CanMoveForward()
@@ -186,5 +186,19 @@ public class Ninja : MonoBehaviour {
 	void CantMoveForward()
 	{
 		moveForward = false;
+	}
+
+	void Flip()
+	{
+		int nextPos = jumpPoints.Count - 1;
+		if (currentJumpPoint > 0) nextPos = currentJumpPoint - 1;
+		if ((jumpPoints[nextPos].position.x > jumpPoints[currentJumpPoint].position.x && transform.localScale.x < 0) || 
+			(jumpPoints[nextPos].position.x < jumpPoints[currentJumpPoint].position.x && transform.localScale.x > 0))
+		{
+			Vector3 temp = transform.localScale;
+			temp.x *= -1;
+			transform.localScale = temp;
+		}
+
 	}
 }

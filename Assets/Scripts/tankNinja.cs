@@ -15,7 +15,7 @@ public class tankNinja : MonoBehaviour {
 			switch(_jumpState)
 			{
 			case JumpState.GROUNDED:
-				
+				CantMove();
 				break;
 			case JumpState.STUNNED:
 				anim.SetInteger("State", 3);
@@ -47,6 +47,7 @@ public class tankNinja : MonoBehaviour {
 	private Foot			foot;
 	public int stunned_turns = 0;
 	private Animator anim;
+	bool canMove = false;
 
 	// Use this for initialization
 
@@ -86,7 +87,7 @@ public class tankNinja : MonoBehaviour {
 				jumpState = JumpState.FORWARD;
 			}
 		}
-		if (jumpState == JumpState.FORWARD) {
+		if (jumpState == JumpState.FORWARD && canMove) {
 			JumpForward ();
 		} else if (jumpState == JumpState.KNOCKBACK) {
 			Knockback ();
@@ -122,12 +123,12 @@ public class tankNinja : MonoBehaviour {
 	
 	void Stunned()
 	{	
-		//stay stunned for 2 turns
+		//stay stunned for 3 turns
 		if (combat.turn == TurnState.ENEMYSTART) {
 			++stunned_turns;
 			//Debug.Log (stunned_turns);
 		}
-		if(stunned_turns == 2) {
+		if(stunned_turns == 3) {
 			jumpState = JumpState.FORWARD;
 			stunned_turns = 0;
 		}
@@ -178,6 +179,32 @@ public class tankNinja : MonoBehaviour {
 	void GoToIdle()
 	{
 		anim.SetInteger("State", 0);
+		Flip();
+	}
+
+	void CanMove()
+	{
+		canMove = true;
+	}
+	void CantMove()
+	{
+		canMove = false;
+	}
+
+	void Flip()
+	{
+		int nextPos = jumpPoints.Count - 1;
+		if (currentJumpPoint > 0) nextPos = currentJumpPoint - 1;
+
+		if ((jumpPoints[nextPos].position.x > jumpPoints[currentJumpPoint].position.x &&
+			transform.localScale.x < 0) || 
+			(jumpPoints[nextPos].position.x < jumpPoints[currentJumpPoint].position.x &&
+				transform.localScale.x > 0))
+		{
+			Vector3 temp = transform.localScale;
+			temp.x *= -1;
+			transform.localScale = temp;
+		}
 	}
 }
 	

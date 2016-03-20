@@ -20,7 +20,6 @@ public class throwNinja : MonoBehaviour {
 
 
 
-
 	// Use this for initialization
 	void Start () {
 		
