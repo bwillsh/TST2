@@ -36,7 +36,7 @@ public class throwNinja : MonoBehaviour {
 		original_star_pos = star_pos.position;
 
 		//get wheelchair component
-		wheelchair_pos = GameObject.Find("Wheelchair").transform;
+		wheelchair_pos = GameObject.Find("TommyCombat").transform;
 	
 
 
@@ -47,8 +47,7 @@ public class throwNinja : MonoBehaviour {
 				turnCounter.Add(child.GetComponent<TurnCounter>());
 			}
 		}
-
-		//access variables in combat controller
+			
 
 
 	}
@@ -57,11 +56,12 @@ public class throwNinja : MonoBehaviour {
 	void Update () {
 		if (current_turn == max_turns) {
 			moveStar ();
-			if (move_done == true) {
+			if (move_done) {
 				current_turn = 0;
 			}
-		} else if(combat.turn ==  TurnState.ENEMYSTART) {
-				current_turn++;
+		} 
+		else if(combat.turn ==  TurnState.ENEMYSTART) {
+			current_turn++;
 		} 
 		TurnOnTurnCounter (current_turn + 1);
 

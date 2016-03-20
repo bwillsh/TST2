@@ -120,7 +120,7 @@ public class tankNinja : MonoBehaviour {
 		if (currentJumpPoint != jumpPoints.Count - 1 && stunned_turns == 0) {
 			transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
 		}
-			
+
 		//stay stunned for 3 turns
 		if (combat.turn == TurnState.ENEMYSTART) {
 			++stunned_turns;

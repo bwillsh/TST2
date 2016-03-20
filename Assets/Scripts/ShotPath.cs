@@ -41,55 +41,6 @@ public class ShotPath : MonoBehaviour {
 
 	public void Ricochet(Vector3 footPosition, Vector3 right, float length)
 	{
-		SegmentCount(2); //reset number of segments
-
-		Vector3 segStart = footPosition;
-		Vector3 segEnd = segStart + (right * length);
-
-		line.SetPosition(0, segStart);
-		line.SetPosition(1, segEnd);
-
-		Vector2 segStart2D = new Vector2(segStart.x, segStart.y);
-		Vector2 segEnd2D = new Vector2(segEnd.x, segEnd.y);
-
-		float lengthRemaining = length;
-
-		Ray2D ray = new Ray2D(segStart2D, segEnd2D - segStart2D);
-		RaycastHit2D hit = Physics2D.Raycast(segStart2D, segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
-
-		int infiniteLoopBlocker = 0; //sometimes the line goes into an infinite loop. This will stop it
-		while (hit.collider != null && infiniteLoopBlocker < 10)
-		{
-			++infiniteLoopBlocker;
-			//there will be a line ricochet, so there needs to be another line segment
-			SegmentCount(numSegments + 1);
-
-			//find where the ricochet hit
-			Vector3 hitPos = hit.point;
-
-			//set previous line segment to end there
-			line.SetPosition(numSegments - 2, hitPos);
-
-			lengthRemaining -= Vector3.Distance(segStart, hitPos);
-
-			Vector2 ricDir2D = Vector2.Reflect(ray.direction, hit.normal);
-			Vector3 ricDir3D = new Vector3(ricDir2D.x, ricDir2D.y, hitPos.z);
-
-			segStart = hitPos;
-			segEnd = hitPos + (ricDir3D * lengthRemaining);
-
-			line.SetPosition(numSegments - 1, segEnd);
-
-			segStart2D = new Vector2(segStart.x, segStart.y);
-			segEnd2D = new Vector2(segEnd.x, segEnd.y);
-
-			ray = new Ray2D(segStart2D, segEnd2D - segStart2D);
-			hit = Physics2D.Raycast(segStart2D + ((segEnd2D - segStart2D) * 0.05f), segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
-		}
-	}
-
-	public void RicochetWhileMoving(Vector3 footPosition, Vector3 right, float length)
-	{
 		vertices.Clear();
 		SegmentCount(2); //reset number of segments
 
@@ -110,8 +61,7 @@ public class ShotPath : MonoBehaviour {
 		RaycastHit2D hit = Physics2D.Raycast(segStart2D, segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
 
 		int infiniteLoopBlocker = 0; //sometimes the line goes into an infinite loop. This will stop it
-
-		while (hit.collider != null && infiniteLoopBlocker < 2)
+		while (hit.collider != null && infiniteLoopBlocker < 10)
 		{
 			++infiniteLoopBlocker;
 			//there will be a line ricochet, so there needs to be another line segment
@@ -119,7 +69,6 @@ public class ShotPath : MonoBehaviour {
 
 			//find where the ricochet hit
 			Vector3 hitPos = hit.point;
-			print (numSegments - 1);
 			vertices.RemoveAt(numSegments -2);
 			vertices.Add(hitPos);
 
@@ -133,17 +82,74 @@ public class ShotPath : MonoBehaviour {
 
 			segStart = hitPos;
 			segEnd = hitPos + (ricDir3D * lengthRemaining);
-			vertices.Add(segEnd);
 
 			line.SetPosition(numSegments - 1, segEnd);
 
 			segStart2D = new Vector2(segStart.x, segStart.y);
 			segEnd2D = new Vector2(segEnd.x, segEnd.y);
+			vertices.Add(segEnd);
 
 			ray = new Ray2D(segStart2D, segEnd2D - segStart2D);
 			hit = Physics2D.Raycast(segStart2D + ((segEnd2D - segStart2D) * 0.05f), segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
 		}
 	}
+
+//	public void RicochetWhileMoving(Vector3 footPosition, Vector3 right, float length)
+//	{
+//		vertices.Clear();
+//		SegmentCount(2); //reset number of segments
+//
+//		Vector3 segStart = footPosition;
+//		Vector3 segEnd = segStart + (right * length);
+//
+//		line.SetPosition(0, segStart);
+//		line.SetPosition(1, segEnd);
+//
+//		vertices.Add(segStart); vertices.Add(segEnd);
+//
+//		Vector2 segStart2D = new Vector2(segStart.x, segStart.y);
+//		Vector2 segEnd2D = new Vector2(segEnd.x, segEnd.y);
+//
+//		float lengthRemaining = length;
+//
+//		Ray2D ray = new Ray2D(segStart2D, segEnd2D - segStart2D);
+//		RaycastHit2D hit = Physics2D.Raycast(segStart2D, segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
+//
+//		int infiniteLoopBlocker = 0; //sometimes the line goes into an infinite loop. This will stop it
+//
+//		while (hit.collider != null && infiniteLoopBlocker < 2)
+//		{
+//			++infiniteLoopBlocker;
+//			//there will be a line ricochet, so there needs to be another line segment
+//			SegmentCount(numSegments + 1);
+//
+//			//find where the ricochet hit
+//			Vector3 hitPos = hit.point;
+//			print (numSegments - 1);
+//			vertices.RemoveAt(numSegments -2);
+//			vertices.Add(hitPos);
+//
+//			//set previous line segment to end there
+//			line.SetPosition(numSegments - 2, hitPos);
+//
+//			lengthRemaining -= Vector3.Distance(segStart, hitPos);
+//
+//			Vector2 ricDir2D = Vector2.Reflect(ray.direction, hit.normal);
+//			Vector3 ricDir3D = new Vector3(ricDir2D.x, ricDir2D.y, hitPos.z);
+//
+//			segStart = hitPos;
+//			segEnd = hitPos + (ricDir3D * lengthRemaining);
+//			vertices.Add(segEnd);
+//
+//			line.SetPosition(numSegments - 1, segEnd);
+//
+//			segStart2D = new Vector2(segStart.x, segStart.y);
+//			segEnd2D = new Vector2(segEnd.x, segEnd.y);
+//
+//			ray = new Ray2D(segStart2D, segEnd2D - segStart2D);
+//			hit = Physics2D.Raycast(segStart2D + ((segEnd2D - segStart2D) * 0.05f), segEnd2D - segStart2D, Vector2.Distance(segEnd2D, segStart2D), ricochetLayer);
+//		}
+//	}
 
 
 

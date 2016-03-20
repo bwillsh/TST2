@@ -13,6 +13,8 @@ public enum TurnState
 //CONTROLLS THE FLOW OF BATTLE (e.g. who's turn it is)
 public class CombatController : MonoBehaviour {
 
+	public static CombatController S;
+
 	public TurnState _turn;
 	public TurnState turn
 	{
@@ -49,6 +51,7 @@ public class CombatController : MonoBehaviour {
 
     void Awake () {
 		TommysTurn();
+		S = this;
 	}
 	// Use this for initialization
 	void Start () {

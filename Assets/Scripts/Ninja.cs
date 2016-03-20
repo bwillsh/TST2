@@ -9,7 +9,6 @@ public enum JumpState
 	FORWARD,
 	KNOCKBACK,
 	STUNNED
-
 }
 
 public class Ninja : MonoBehaviour {
@@ -25,12 +24,15 @@ public class Ninja : MonoBehaviour {
 			switch(_jumpState)
 			{
 			case JumpState.GROUNDED:
+				anim.SetInteger("State", 2);
 				break;
 			case JumpState.FORWARD:
+				anim.SetInteger("State", 1);
 				currentJumpPoint -= 1;
 				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
 				break;
 			case JumpState.KNOCKBACK:
+				anim.SetInteger("State", 1);
 				currentJumpPoint += jumpPoints.Count - 1;
 				currentJumpPoint = Mathf.Clamp(currentJumpPoint, 0, numberOfJumpPoints - 1);
 				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
@@ -49,12 +51,15 @@ public class Ninja : MonoBehaviour {
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
 	private Foot			foot;
+	private Animator 		anim;
+	private bool			moveForward = false;
 
 	// Use this for initialization
 
 	void Start () 
 	{
 		//initialize variables
+		anim = GetComponent<Animator>();
 		foot = GameObject.Find ("Foot").GetComponent<Foot>();
 		jumpState = JumpState.GROUNDED;
 		numberOfJumpPoints = jumpPoints.Count;
@@ -87,7 +92,7 @@ public class Ninja : MonoBehaviour {
 		{
 			jumpState = JumpState.FORWARD;
 		}
-		if (jumpState == JumpState.FORWARD)
+		if (jumpState == JumpState.FORWARD && moveForward)
 		{
 			JumpForward();
 		}
@@ -110,6 +115,7 @@ public class Ninja : MonoBehaviour {
 	//move ninja to a previous jump point
 	void Knockback()
 	{
+		print ("HERERER");
 		transform.position = Vector3.MoveTowards(transform.position, jumpPoints[currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
 		if (transform.position == jumpPoints[currentJumpPoint].position)
 		{
@@ -166,5 +172,19 @@ public class Ninja : MonoBehaviour {
 				turnCounter[i].TurnOff();
 			}
 		}
+	}
+
+	void BackToIdle()
+	{
+		anim.SetInteger("State", 0);
+	}
+
+	void CanMoveForward()
+	{
+		moveForward = true;
+	}
+	void CantMoveForward()
+	{
+		moveForward = false;
 	}
 }
