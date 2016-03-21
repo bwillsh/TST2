@@ -5,6 +5,7 @@ public class ShowItem : MonoBehaviour {
 
 	public GameObject item;
 	public GameObject dialogBox;
+	public GameObject unlockParticle;
 	private bool inDialog = false;
 	private Vector2 mousePos;
 
@@ -49,8 +50,16 @@ public class ShowItem : MonoBehaviour {
 	}
 
 	void Button() {
-		print ("Opening dialog");
-		dialogBox.SetActive (!dialogBox.activeInHierarchy);
-		inDialog = dialogBox.activeInHierarchy;
+		if (GameManager.S.currentItem != "Key") {
+			print ("Opening dialog");
+			dialogBox.SetActive (!dialogBox.activeInHierarchy);
+			inDialog = dialogBox.activeInHierarchy;
+		} else {
+			item.SetActive (false);
+			GameManager.S.currentItem = null;
+			print ("Making particles");
+			Instantiate (unlockParticle, transform.position, transform.rotation);
+			Application.LoadLevel ("Menu");
+		}
 	}
 }
