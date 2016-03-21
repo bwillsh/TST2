@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-public class tankNinja : MonoBehaviour {
+public class tankNinja : NinjaParent {
 	public JumpState 		_jumpState;
 	public JumpState		jumpState
 	{

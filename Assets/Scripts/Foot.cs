@@ -30,7 +30,7 @@ public class Foot : MonoBehaviour {
 	}
 	//sets up the inputState variable. 
 	//can set inputState by inputState = InputState.INPUT (or another state)
-	public InputState 	_inputState;
+	private InputState 	_inputState;
 	public InputState	inputState
 	{
 		get {return _inputState;}
@@ -390,7 +390,7 @@ public class Foot : MonoBehaviour {
 		if (Vector2.Distance(footPos, originalShotPos) < .1f)
 		{
 
-			Vector3 returnPosition = new Vector3(originalShotPos.x, originalShotPos.y, -1);
+			Vector3 returnPosition = new Vector3(originalShotPos.x, originalShotPos.y, -4);
 			transform.position = returnPosition;
 
 			//reset velocity

@@ -11,7 +11,7 @@ public enum JumpState
 	STUNNED
 }
 
-public class Ninja : MonoBehaviour {
+public class Ninja : NinjaParent {
 	public JumpState 		_jumpState;
 	public JumpState		jumpState
 
