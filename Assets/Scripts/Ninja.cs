@@ -87,7 +87,7 @@ public class Ninja : NinjaParent {
 	// Update is called once per frame
 	void Update () 
 	{
-
+		
 		if (combat.turn == TurnState.ENEMYSTART)
 		{
 			jumpState = JumpState.FORWARD;
