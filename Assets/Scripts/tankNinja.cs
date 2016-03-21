@@ -19,15 +19,15 @@ public class tankNinja : NinjaParent {
 				break;
 			case JumpState.STUNNED:
 				anim.SetInteger("State", 3);
-//				if (currentJumpPoint != jumpPoints.Count - 1) {
-//					currentJumpPoint += 1;
-//				}
 				break;
 			case JumpState.FORWARD:
 				anim.SetInteger("State", 1);
+				SetJumpPoints();
 				currentJumpPoint -= 1;
 				break;
 			case JumpState.KNOCKBACK:
+				currentJumpDuration = 0;
+				SetJumpPoints();
 				currentJumpPoint += jumpPoints.Count - 1;
 				currentJumpPoint = Mathf.Clamp(currentJumpPoint, 0, numberOfJumpPoints - 1);
 				break;
@@ -45,9 +45,12 @@ public class tankNinja : NinjaParent {
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
 	private Foot			foot;
-	public int stunned_turns = 0;
-	private Animator anim;
-	bool canMove = false;
+	public int 				stunned_turns = 0;
+	private Animator 		anim;
+	bool 					canMove = false; //needed for animation
+	public float			jumpDuration = 3;
+	private float			currentJumpDuration = 0;
+	private Vector3			startJump, endJump, midJump;
 
 	// Use this for initialization
 
@@ -101,9 +104,11 @@ public class tankNinja : NinjaParent {
 	//move Ninja to next jump point
 	void JumpForward()
 	{	
-		transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * Time.deltaTime);
-		if (transform.position == jumpPoints[currentJumpPoint].position)
+		transform.position = MoveAlongBezierCurve(currentJumpDuration / jumpDuration);
+		currentJumpDuration += Time.deltaTime;
+		if (currentJumpDuration >= jumpDuration)
 		{
+			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
 			anim.SetInteger("State", 2);
 		}
@@ -112,9 +117,11 @@ public class tankNinja : NinjaParent {
 	//move ninja to a previous jump point
 	void Knockback()
 	{	
-		transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
-		if (transform.position == jumpPoints[currentJumpPoint].position)
+		transform.position = MoveAlongBezierCurve(currentJumpDuration / jumpDuration);
+		currentJumpDuration += Time.deltaTime;
+		if (currentJumpDuration >= jumpDuration)
 		{
+			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
 			anim.SetInteger("State", 2);
 		}
@@ -205,6 +212,27 @@ public class tankNinja : NinjaParent {
 			temp.x *= -1;
 			transform.localScale = temp;
 		}
+	}
+
+	Vector3 MoveAlongBezierCurve(float t)
+	{
+		float u = 1 - t;
+
+		Vector3 point = u * u * startJump;
+		point += 2 * u * t * midJump;
+		point += t * t * endJump;
+
+		return point;
+	}
+
+	void SetJumpPoints()
+	{
+		startJump = jumpPoints[currentJumpPoint].position;
+		if (currentJumpPoint == 0) endJump = jumpPoints[jumpPoints.Count - 1].position;
+		else endJump = jumpPoints[currentJumpPoint - 1].position;
+		midJump.z = startJump.z;
+		midJump.x = (startJump.x + endJump.x) / 2;
+		midJump.y = Mathf.Max(startJump.y, endJump.y) + Mathf.Abs(((startJump.y + endJump.y) / 2));
 	}
 }
 	

@@ -28,13 +28,15 @@ public class Ninja : NinjaParent {
 				break;
 			case JumpState.FORWARD:
 				anim.SetInteger("State", 1);
+				SetJumpPoints();
 				currentJumpPoint -= 1;
 				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
 				break;
 			case JumpState.KNOCKBACK:
+				currentJumpDuration = 0;
 				anim.SetInteger("State", 1);
-				currentJumpPoint += jumpPoints.Count - 1;
-				currentJumpPoint = Mathf.Clamp(currentJumpPoint, 0, numberOfJumpPoints - 1);
+				SetJumpPoints();
+				currentJumpPoint = jumpPoints.Count - 1;
 				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
 				break;
 			default:
@@ -52,7 +54,10 @@ public class Ninja : NinjaParent {
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
 	private Foot			foot;
 	private Animator 		anim;
-	private bool			moveForward = false;
+	private bool			moveForward = false; //needed for animation stuff
+	public float			jumpDuration = 3;
+	private float			currentJumpDuration = 0;
+	private Vector3			startJump, endJump, midJump;
 
 	// Use this for initialization
 
@@ -105,9 +110,11 @@ public class Ninja : NinjaParent {
 	//move Ninja to next jump point
 	void JumpForward()
 	{
-		transform.position = Vector3.MoveTowards(transform.position, jumpPoints[currentJumpPoint].position, jumpSpeed * Time.deltaTime);
-		if (transform.position == jumpPoints[currentJumpPoint].position)
+		transform.position = MoveAlongBezierCurve(currentJumpDuration / jumpDuration);
+		currentJumpDuration += Time.deltaTime;
+		if (currentJumpDuration >= jumpDuration)
 		{
+			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
 		}
 	}
@@ -115,9 +122,11 @@ public class Ninja : NinjaParent {
 	//move ninja to a previous jump point
 	void Knockback()
 	{
-		transform.position = Vector3.MoveTowards(transform.position, jumpPoints[currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
-		if (transform.position == jumpPoints[currentJumpPoint].position)
+		transform.position = MoveAlongBezierCurve(currentJumpDuration / jumpDuration);
+		currentJumpDuration += Time.deltaTime;
+		if (currentJumpDuration >= jumpDuration)
 		{
+			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
 		}
 	}
@@ -200,5 +209,26 @@ public class Ninja : NinjaParent {
 			transform.localScale = temp;
 		}
 
+	}
+
+	Vector3 MoveAlongBezierCurve(float t)
+	{
+		float u = 1 - t;
+
+		Vector3 point = u * u * startJump;
+		point += 2 * u * t * midJump;
+		point += t * t * endJump;
+
+		return point;
+	}
+
+	void SetJumpPoints()
+	{
+		startJump = jumpPoints[currentJumpPoint].position;
+		if (currentJumpPoint == 0) endJump = jumpPoints[jumpPoints.Count - 1].position;
+		else endJump = jumpPoints[currentJumpPoint - 1].position;
+		midJump.z = startJump.z;
+		midJump.x = (startJump.x + endJump.x) / 2;
+		midJump.y = Mathf.Max(startJump.y, endJump.y) + ((startJump.y + endJump.y) / 2);
 	}
 }
