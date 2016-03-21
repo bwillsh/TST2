@@ -65,6 +65,7 @@ public class Foot : MonoBehaviour {
 			case AttackState.NORMAL:
 				if (hasItem)
 				{
+					print ("Loading level " + GameManager.S.level);
 					Application.LoadLevel (GameManager.S.level);
 				}
 				break;

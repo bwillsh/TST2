@@ -19,7 +19,7 @@ public class Door : MonoBehaviour {
 
     public void Button()
     {
-		Application.LoadLevel (2);
+		Application.LoadLevel (3);
     }
 
 
