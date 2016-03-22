@@ -40,6 +40,9 @@ public class CombatController : MonoBehaviour {
 	}
 
 	public List<Ninja> ninjaList;
+//	public List<tankNinja> ninjaTank;
+//	public List<throwNinja> ninjaThrow;
+//	private bool checkedNinjaNormal = false, checkedNinjaTank = false, checkedNinjaThrow = false;
 
 	public int NinjaCount;
 
@@ -61,23 +64,24 @@ public class CombatController : MonoBehaviour {
         {
             LevelGen.S.GenLevel();
         }
-		for (int i = 0; i < ninjaList.Count; ++i) {
-			++NinjaCount;
-		}
+
 		ceiling = GameObject.Find("Ceiling");
 		ceilingHeight = ceiling.GetComponent<BoxCollider2D>().bounds.min.y;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
+		print (NinjaCount);
 		if (turn == TurnState.TOMMYEND)
 		{
 			EnemysTurn();
 		}
-		else if (turn == TurnState.ENEMY && NinjasDoneMoving())
+		else if (turn == TurnState.ENEMY)
 		{
-			TommysTurn();
+			if (NinjasDoneMoving())
+			{
+				TommysTurn();
+			}
 		}
 		else if (turn == TurnState.ENEMYSTART) 
 		{
@@ -110,6 +114,8 @@ public class CombatController : MonoBehaviour {
 	{
 		turn = TurnState.ENEMYSTART;
 	}
+
+
 
 
 	bool NinjasDoneMoving()

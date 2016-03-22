@@ -87,6 +87,7 @@ public class Ninja : NinjaParent {
 			turnCounter[0].TurnOn();
 		}
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
+		combat.NinjaCount++;
 	}
 	
 	// Update is called once per frame
@@ -107,6 +108,11 @@ public class Ninja : NinjaParent {
 		}
 	}
 
+	public void StartAttack()
+	{
+		jumpState = JumpState.FORWARD;
+	}
+
 	//move Ninja to next jump point
 	void JumpForward()
 	{
@@ -114,6 +120,7 @@ public class Ninja : NinjaParent {
 		currentJumpDuration += Time.deltaTime;
 		if (currentJumpDuration >= jumpDuration)
 		{
+			transform.position = endJump;
 			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
 		}
@@ -126,6 +133,7 @@ public class Ninja : NinjaParent {
 		currentJumpDuration += Time.deltaTime;
 		if (currentJumpDuration >= jumpDuration)
 		{
+			transform.position = endJump;
 			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
 		}

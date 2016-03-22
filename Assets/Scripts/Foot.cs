@@ -227,7 +227,7 @@ public class Foot : MonoBehaviour {
 		
 		else if (attackState == AttackState.CHARGING)
 		{
-			RotateFoot(true);
+			RotateFoot();
 			CalculateAttackStrength();
 			if (attackStrength > 0)
 			{
@@ -279,7 +279,7 @@ public class Foot : MonoBehaviour {
 
 	//rotates the foot so it is facing the opposite direction of the mouse.
 	//Some of this code is taken from online
-	void RotateFoot(bool input) 
+	void RotateFoot() 
 	{
 
 		Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - originalTouchPoint;
@@ -310,7 +310,8 @@ public class Foot : MonoBehaviour {
 			attackState = AttackState.SLOWING;
 			return;
 		}
-		print (currentRicPoint);
+		if (currentRicPoint < 0) currentRicPoint = 0;
+		if (currentRicPoint > ricochetPoints.Count - 1) currentRicPoint = ricochetPoints.Count - 1;
 		if (transform.position == ricochetPoints[currentRicPoint])
 		{
 			currentRicPoint++;
@@ -322,7 +323,8 @@ public class Foot : MonoBehaviour {
 				transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 			}
 		}
-
+		if (currentRicPoint < 0) currentRicPoint = 0;
+		if (currentRicPoint > ricochetPoints.Count - 1) currentRicPoint = ricochetPoints.Count - 1;
 		transform.position = Vector3.MoveTowards(transform.position, ricochetPoints[currentRicPoint], currentShootSpeed * Time.deltaTime);
 
 	}
