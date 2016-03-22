@@ -65,6 +65,7 @@ public class Foot : MonoBehaviour {
 			case AttackState.NORMAL:
 				if (hasItem)
 				{
+					print ("Loading level " + GameManager.S.level);
 					Application.LoadLevel (GameManager.S.level);
 				}
 				currentShootSpeed = shootSpeed;
@@ -309,6 +310,7 @@ public class Foot : MonoBehaviour {
 			attackState = AttackState.SLOWING;
 			return;
 		}
+		print (currentRicPoint);
 		if (transform.position == ricochetPoints[currentRicPoint])
 		{
 			currentRicPoint++;
@@ -454,7 +456,7 @@ public class Foot : MonoBehaviour {
 
 	void GetShotPathVertices()
 	{
-				currentRicPoint = 0;
+		currentRicPoint = 0;
 		ricochetPoints.Clear();
 		for (int i = 0; i < shotPath.vertices.Count; ++i)
 		{

@@ -230,5 +230,10 @@ public class Ninja : NinjaParent {
 		midJump.z = startJump.z;
 		midJump.x = (startJump.x + endJump.x) / 2;
 		midJump.y = Mathf.Max(startJump.y, endJump.y) + ((startJump.y + endJump.y) / 2);
+		float height = GetComponent<PolygonCollider2D>().bounds.max.y - transform.position.y;
+		if (midJump.y > CombatController.S.ceilingHeight || transform.position.y + height > CombatController.S.ceilingHeight)
+		{
+			midJump.y = CombatController.S.ceilingHeight - height;
+		}
 	}
 }

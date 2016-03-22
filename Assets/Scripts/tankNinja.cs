@@ -44,7 +44,6 @@ public class tankNinja : NinjaParent {
 	public float			jumpSpeed; //the speed to jump between positions
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
-	private Foot			foot;
 	public int 				stunned_turns = 0;
 	private Animator 		anim;
 	bool 					canMove = false; //needed for animation
@@ -61,7 +60,6 @@ public class tankNinja : NinjaParent {
 		++combat.NinjaCount;
 
 		//initialize variables
-		foot = GameObject.Find ("Foot").GetComponent<Foot>();
 		jumpState = JumpState.GROUNDED;
 		numberOfJumpPoints = jumpPoints.Count;
 		currentJumpPoint = numberOfJumpPoints - 1;
@@ -233,6 +231,11 @@ public class tankNinja : NinjaParent {
 		midJump.z = startJump.z;
 		midJump.x = (startJump.x + endJump.x) / 2;
 		midJump.y = Mathf.Max(startJump.y, endJump.y) + Mathf.Abs(((startJump.y + endJump.y) / 2));
+		float height = GetComponent<PolygonCollider2D>().bounds.max.y - transform.position.y;
+		if (midJump.y > CombatController.S.ceilingHeight || transform.position.y + height > CombatController.S.ceilingHeight)
+		{
+			midJump.y = CombatController.S.ceilingHeight - height;
+		}
 	}
 }
 	

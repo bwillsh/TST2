@@ -47,6 +47,8 @@ public class CombatController : MonoBehaviour {
 
     public GameObject ItemDrop;
 	public Vector3 ItemDropPosition;
+	private GameObject	ceiling;
+	public float	ceilingHeight;
 
 
     void Awake () {
@@ -62,6 +64,8 @@ public class CombatController : MonoBehaviour {
 		for (int i = 0; i < ninjaList.Count; ++i) {
 			++NinjaCount;
 		}
+		ceiling = GameObject.Find("Ceiling");
+		ceilingHeight = ceiling.GetComponent<BoxCollider2D>().bounds.min.y;
 	}
 	
 	// Update is called once per frame
