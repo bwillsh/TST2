@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour {
     public GameObject cur = null;
 	public Animator anim;
 	public bool facingRight = true;
+	public bool touching;
 
     public static PlayerController S;
     void Awake()
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+			
 	}
 
     //If the player collides with an interactable object, saves it in cur

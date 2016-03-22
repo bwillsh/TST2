@@ -24,6 +24,7 @@ public class Wheelchair : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
+
 		if (coll.gameObject.tag == "Ninja" || coll.gameObject.tag == "NinjaStar")
 		{
 			health.lowerHealth(0.2f);
