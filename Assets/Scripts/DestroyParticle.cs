@@ -2,11 +2,11 @@
 using System.Collections;
 
 public class DestroyParticle : MonoBehaviour {
-
-	// Update is called once per frame
-	void Update () {
-		if (!GetComponent<ParticleSystem> ().isPlaying) {
-			Destroy (gameObject);
+	// Use this for initialization
+	void Start () {
+		if(GetComponent<ParticleSystem>())
+		{
+			GameObject.Destroy(gameObject, GetComponent<ParticleSystem>().duration + GetComponent<ParticleSystem>().startLifetime);
 		}
 	}
 }

@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		anim = GetComponent<Animator>();
+		anim.SetBool ("Moving", true);
 	}
 	
 	// Update is called once per frame
