@@ -41,5 +41,6 @@ public class Storm : MonoBehaviour {
 		Instantiate (lightningparticle, transform.position, transform.rotation);
 		yield return new WaitForSeconds(1);
 		myRenderer.sprite = storm;
+		Application.LoadLevel ("overWorld_2_ben");
 	}
 }

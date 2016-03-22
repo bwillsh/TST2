@@ -16,6 +16,7 @@ public class Door : MonoBehaviour {
 
     public void Button()
     {
+		GameManager.S.level = Application.loadedLevel;
 		Application.LoadLevel (loadWhichLevel);
     }
 
