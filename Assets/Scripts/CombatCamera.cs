@@ -67,23 +67,23 @@ public class CombatCamera : MonoBehaviour {
 		}
 	}
 
-	private void FollowNinja()
-	{
-		Vector3 newPos = CombatController.S.ninjaList[currentNinjaNumber].transform.position;
-		newPos.z = transform.position.z;
-		transform.position = newPos;
-	}
-
-	private void NextNinja()
-	{
-		++currentNinjaNumber;
-		if (currentNinjaNumber >= CombatController.S.ninjaList.Count)
-		{
-			cam = CamState.NORMAL;
-			return;
-		}
-		targetPosition = CombatController.S.ninjaList[currentNinjaNumber].transform.position;
-		targetPosition.z = transform.position.z;
-		currentNinja = CombatController.S.ninjaList[currentNinjaNumber].transform.GetComponent<Ninja>();
-	}
+//	private void FollowNinja()
+//	{
+//		Vector3 newPos = CombatController.S.ninjaList[currentNinjaNumber].transform.position;
+//		newPos.z = transform.position.z;
+//		transform.position = newPos;
+//	}
+//
+//	private void NextNinja()
+//	{
+//		++currentNinjaNumber;
+//		if (currentNinjaNumber >= CombatController.S.ninjaList.Count)
+//		{
+//			cam = CamState.NORMAL;
+//			return;
+//		}
+//		targetPosition = CombatController.S.ninjaList[currentNinjaNumber].transform.position;
+//		targetPosition.z = transform.position.z;
+//		currentNinja = CombatController.S.ninjaList[currentNinjaNumber].transform.GetComponent<Ninja>();
+//	}
 }

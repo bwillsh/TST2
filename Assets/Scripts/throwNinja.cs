@@ -93,6 +93,10 @@ public class throwNinja : NinjaParent {
 		TurnOnTurnCounter (current_turn + 1);
 	}
 
+	public void StartAttack()
+	{
+		NextState();
+	}
 
 	void TurnOnTurnCounter(int n)
 	{

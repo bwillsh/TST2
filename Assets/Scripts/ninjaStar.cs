@@ -17,6 +17,7 @@ public class ninjaStar : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		transform.position = Vector3.MoveTowards(transform.position, Wheelchair.S.transform.position, speed * Time.deltaTime);
+		transform.Rotate(Vector3.forward, 800 * Time.deltaTime);
 	}
 
 	public void SetSpeed(float sp)

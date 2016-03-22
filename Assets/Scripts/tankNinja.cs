@@ -99,6 +99,11 @@ public class tankNinja : NinjaParent {
 			
 	}
 
+	public void StartAttack()
+	{
+		jumpState = JumpState.FORWARD;
+	}
+
 	//move Ninja to next jump point
 	void JumpForward()
 	{	
@@ -106,6 +111,7 @@ public class tankNinja : NinjaParent {
 		currentJumpDuration += Time.deltaTime;
 		if (currentJumpDuration >= jumpDuration)
 		{
+			transform.position = endJump;
 			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
 			anim.SetInteger("State", 2);
@@ -119,6 +125,7 @@ public class tankNinja : NinjaParent {
 		currentJumpDuration += Time.deltaTime;
 		if (currentJumpDuration >= jumpDuration)
 		{
+			transform.position = endJump;
 			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
 			anim.SetInteger("State", 2);
