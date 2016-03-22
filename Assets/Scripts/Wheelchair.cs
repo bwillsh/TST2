@@ -3,9 +3,16 @@ using System.Collections;
 
 public class Wheelchair : MonoBehaviour {
 
+	public static Wheelchair S;
+
 	private HealthBar	health;
 
 	// Use this for initialization
+	void Awake()
+	{
+		S = this;
+	}
+
 	void Start () {
 		health = GameObject.Find ("Bar").GetComponent<HealthBar>();
 	}
@@ -17,7 +24,8 @@ public class Wheelchair : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.gameObject.tag == "Ninja" || coll.gameObject.tag == "tankNinja")
+
+		if (coll.gameObject.tag == "Ninja" || coll.gameObject.tag == "NinjaStar")
 		{
 			health.lowerHealth(0.2f);
 		}

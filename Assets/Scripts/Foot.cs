@@ -30,7 +30,7 @@ public class Foot : MonoBehaviour {
 	}
 	//sets up the inputState variable. 
 	//can set inputState by inputState = InputState.INPUT (or another state)
-	public InputState 	_inputState;
+	private InputState 	_inputState;
 	public InputState	inputState
 	{
 		get {return _inputState;}
@@ -68,20 +68,20 @@ public class Foot : MonoBehaviour {
 					print ("Loading level " + GameManager.S.level);
 					Application.LoadLevel (GameManager.S.level);
 				}
+				currentShootSpeed = shootSpeed;
 				break;
 			case AttackState.CHARGING:
 				originalTouchPoint = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, -10.0f));
 				break;
 			case AttackState.SHOOTING:
 				originalShotPos = footPos;
-				originalShotPos3D = transform.position;
-				attackAngle = Vector3.right;
-				rb.velocity = transform.right * shotSpeedCurrent;
+				GetShotPathVertices();
+				//rb.velocity = transform.right * shotSpeedCurrent;
 				break;
 			case AttackState.SLOWING:
-				//print ("slow spot: " + Vector2.Distance(originalShotPos, footPos));
+
 				deceleration = CalculateDeceleration();
-				//print ("deceleration: " + deceleration);
+
 				break;
 			case AttackState.RETURNING:
 				distanceTraveled = 0;
@@ -118,13 +118,15 @@ public class Foot : MonoBehaviour {
 	private float		shotSpeedCurrent; //the current speed of the foot
 	public float		returnAccelRate; //how quickly the foot accelerates when returning to Tommy
 	private Vector2		originalShotPos; //where the foot was positioned at the beginning of the shot
-	private Vector3 	originalShotPos3D;
 	private Vector3		attackAngle;
 	private float		attackStrength; //the charge converted to a decimal [0, 1]
 	private float		deceleration; //by how much the foot decelerates at the tip of the attack
 	private List<Vector3> ricochetPoints; //the positions where the foot ricochets
+	private int			currentRicPoint;
 	private Vector3		returnTarget;
 	private float		distanceTraveled;
+	public float		shootSpeed = 20;
+	private float		currentShootSpeed = 20;
 
 	//AIMING
 	public GameObject	line; //the line direction indicator prefab
@@ -198,8 +200,8 @@ public class Foot : MonoBehaviour {
 				if (attackState == AttackState.CHARGING)
 				{
 					shotPath.HideLine();
-					//attackStrength == -1 when you are trying to fire an illegal shot backward
-					if (attackStrength == -1) 
+
+					if (Vector2.Distance(originalTouchPoint, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, -10.0f))) < .01f)
 					{
 						//set back to normal
 						attackState = AttackState.NORMAL;
@@ -240,17 +242,14 @@ public class Foot : MonoBehaviour {
 		else if (attackState == AttackState.SHOOTING)
 		{
 			ShootFoot();
-			//shotPath.Ricochet(originalShotPos3D, attackAngle, maxShotDistance * attackStrength);
 		}
 		else if (attackState == AttackState.RETURNING)
 		{
 			ReturnFoot();
-
 		}
 		else if (attackState == AttackState.SLOWING)
 		{
 			SlowFoot();
-			//shotPath.Ricochet(originalShotPos3D, attackAngle, maxShotDistance * attackStrength);
 		}
 		RotationCheck();
 	}
@@ -282,14 +281,14 @@ public class Foot : MonoBehaviour {
 	//Some of this code is taken from online
 	void RotateFoot() 
 	{
+
 		Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - originalTouchPoint;
 		diff.Normalize();
 		
 		float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 180;
 
-		//rot_z = diff.x <= 0 ? rot_z - 180 : rot_z;
-
 		transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
+
 	}
 
 	//sets attackStrength to a float 0-1 to represent to attack strength, 0 being no power, 1 being full power
@@ -299,39 +298,57 @@ public class Foot : MonoBehaviour {
 		float distanceFromTouchToFoot = Vector2.Distance(mousePos, originalTouchPoint2D);
 
 		float strength = distanceFromTouchToFoot > maxChargeRadius ? 1 : distanceFromTouchToFoot / maxChargeRadius;
-		attackStrength = /*mousePos.x > transform.position.x ? -1 :*/ strength;
+		attackStrength = strength;
 
 	}
 
 	//once the foot has reached a certain point the state will change to SLOWING
 	void ShootFoot() 
 	{
-
 		if (distanceTraveled >= attackStrength * maxShotDistance * startSlowingDistance)
 		{
-			//some debugging prints I'm using
-//			print ("How far it should go: " + maxShotDistance * attackStrength);
-//			print ("Where it is slowing down " + Vector2.Distance(footPos, originalShotPos));
-//			print ("attackStrength: " + attackStrength);
-//			print ("slowingDistance * attackStrength: " + startSlowingDistance * attackStrength);
 			attackState = AttackState.SLOWING;
+			return;
 		}
+		if (currentRicPoint < 0) currentRicPoint = 0;
+		if (currentRicPoint > ricochetPoints.Count - 1) currentRicPoint = ricochetPoints.Count - 1;
+		if (transform.position == ricochetPoints[currentRicPoint])
+		{
+			currentRicPoint++;
+			if (currentRicPoint < ricochetPoints.Count)
+			{
+				returnTarget = ricochetPoints[currentRicPoint];
+				Vector3 dir = transform.position - returnTarget;
+				float angle = Mathf.Atan2(dir.y,dir.x) * Mathf.Rad2Deg - 180;
+				transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+			}
+		}
+		if (currentRicPoint < 0) currentRicPoint = 0;
+		if (currentRicPoint > ricochetPoints.Count - 1) currentRicPoint = ricochetPoints.Count - 1;
+		transform.position = Vector3.MoveTowards(transform.position, ricochetPoints[currentRicPoint], currentShootSpeed * Time.deltaTime);
+
 	}
 
 	//every frame subtracts from the foot's velocity until it hits near zero (Mathf.Epsilon)
 	void SlowFoot()
 	{
-		//experimenting with some stuff
-//		|| Vector2.Distance(footPos, originalShotPos) >= maxShotDistance * attackStrength
-		if (shotSpeedCurrent <= Mathf.Epsilon)
+		//need better slowing equation
+		if (currentShootSpeed > 2)
+			currentShootSpeed -= 1f;
+		if (transform.position == ricochetPoints[ricochetPoints.Count - 1])
 		{
 			attackState = AttackState.RETURNING;
+			return;
 		}
-		else
+		if (transform.position == ricochetPoints[currentRicPoint])
 		{
-			shotSpeedCurrent -= deceleration;
-			rb.velocity = transform.right * shotSpeedCurrent;
+			currentRicPoint++;
+			returnTarget = ricochetPoints[currentRicPoint];
+			Vector3 dir = transform.position - returnTarget;
+			float angle = Mathf.Atan2(dir.y,dir.x) * Mathf.Rad2Deg - 180;
+			transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 		}
+		transform.position = Vector3.MoveTowards(transform.position, ricochetPoints[currentRicPoint], currentShootSpeed * Time.deltaTime);
 	}
 
 	//Remember those physics equations, like x = x0 + v * 2*a that shit? This is that shit.
@@ -347,7 +364,6 @@ public class Foot : MonoBehaviour {
 	{
 		if (ricochetPoints.Count > 0)
 		{
-			//print ((transform.position - ricochetPoints[ricochetPoints.Count - 1]).magnitude);
 			if ((transform.position - ricochetPoints[ricochetPoints.Count - 1]).magnitude < .05f)
 			{
 				ricochetPoints.RemoveAt(ricochetPoints.Count - 1);
@@ -372,20 +388,19 @@ public class Foot : MonoBehaviour {
 
 		shotSpeedCurrent = Mathf.Lerp (shotSpeedCurrent, shotSpeedOriginal * 2, returnAccelRate * Time.deltaTime);
 		transform.position = Vector3.MoveTowards(transform.position, returnTarget, shotSpeedCurrent * Time.deltaTime);
-		//rb.velocity = -transform.right * shotSpeedCurrent;
 	
 
 		//once the foot is back to its original position
 		if (Vector2.Distance(footPos, originalShotPos) < .1f)
 		{
 
-			Vector3 returnPosition = new Vector3(originalShotPos.x, originalShotPos.y, -1);
+			Vector3 returnPosition = new Vector3(originalShotPos.x, originalShotPos.y, -4);
 			transform.position = returnPosition;
 
 			//reset velocity
 			rb.velocity = Vector2.zero;
 			//reset foot rotation
-			transform.rotation = Quaternion.identity;
+			transform.rotation = Quaternion.Euler(0, 0, 90);
 			//reset shot speed
 			shotSpeedCurrent = shotSpeedOriginal;
 			//reset Tommy to his neutral state
@@ -411,17 +426,17 @@ public class Foot : MonoBehaviour {
 	{
 		if (coll.gameObject.layer == 8 && (attackState == AttackState.SHOOTING || attackState == AttackState.SLOWING))
 		{
-			ricochetPoints.Add(transform.position);
-			Ray2D ray = new Ray2D(footPos, transform.right);
-			Vector2 right = new Vector2(transform.right.x, transform.right.y);
-
-			RaycastHit2D hit = Physics2D.Raycast(footPos, right, 100 /*Time.deltaTime * shotSpeedCurrent*/, collisionMask);
-			if (hit.collider != null) {
-				Vector2 ricochetDir = Vector2.Reflect(ray.direction, hit.normal);
-				float rot = Mathf.Atan2(ricochetDir.y, ricochetDir.x) * Mathf.Rad2Deg;
-				transform.eulerAngles = new Vector3(0, 0, rot);
-				rb.velocity = transform.right * shotSpeedCurrent;
-			}
+//			ricochetPoints.Add(transform.position);
+//			Ray2D ray = new Ray2D(footPos, transform.right);
+//			Vector2 right = new Vector2(transform.right.x, transform.right.y);
+//
+//			RaycastHit2D hit = Physics2D.Raycast(footPos, right, 100 /*Time.deltaTime * shotSpeedCurrent*/, collisionMask);
+//			if (hit.collider != null) {
+//				Vector2 ricochetDir = Vector2.Reflect(ray.direction, hit.normal);
+//				float rot = Mathf.Atan2(ricochetDir.y, ricochetDir.x) * Mathf.Rad2Deg;
+//				transform.eulerAngles = new Vector3(0, 0, rot);
+//				rb.velocity = transform.right * shotSpeedCurrent;
+//			}
 			if (coll.gameObject.tag == "DamageWall")
 			{
 				health.lowerHealth(0.1f);
@@ -439,6 +454,16 @@ public class Foot : MonoBehaviour {
 	{
 		Vector2 newPosition = new Vector2(transform.position.x, transform.position.y);
 		distanceTraveled += Vector2.Distance(newPosition, footPos);
+	}
+
+	void GetShotPathVertices()
+	{
+		currentRicPoint = 0;
+		ricochetPoints.Clear();
+		for (int i = 0; i < shotPath.vertices.Count; ++i)
+		{
+			ricochetPoints.Add(shotPath.vertices[i]);
+		}
 	}
 
 

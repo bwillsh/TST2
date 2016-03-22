@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-public class tankNinja : MonoBehaviour {
+public class tankNinja : NinjaParent {
 	public JumpState 		_jumpState;
 	public JumpState		jumpState
 	{
@@ -15,16 +15,19 @@ public class tankNinja : MonoBehaviour {
 			switch(_jumpState)
 			{
 			case JumpState.GROUNDED:
+				CantMove();
 				break;
 			case JumpState.STUNNED:
-				if (currentJumpPoint != jumpPoints.Count - 1) {
-					currentJumpPoint += 1;
-				}
+				anim.SetInteger("State", 3);
 				break;
 			case JumpState.FORWARD:
+				anim.SetInteger("State", 1);
+				SetJumpPoints();
 				currentJumpPoint -= 1;
 				break;
 			case JumpState.KNOCKBACK:
+				currentJumpDuration = 0;
+				SetJumpPoints();
 				currentJumpPoint += jumpPoints.Count - 1;
 				currentJumpPoint = Mathf.Clamp(currentJumpPoint, 0, numberOfJumpPoints - 1);
 				break;
@@ -41,19 +44,22 @@ public class tankNinja : MonoBehaviour {
 	public float			jumpSpeed; //the speed to jump between positions
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
-	private Foot			foot;
-	private bool stunned = false;
-	public int stunned_turns = 0;
+	public int 				stunned_turns = 0;
+	private Animator 		anim;
+	bool 					canMove = false; //needed for animation
+	public float			jumpDuration = 3;
+	private float			currentJumpDuration = 0;
+	private Vector3			startJump, endJump, midJump;
 
 	// Use this for initialization
 
 	void Start () 
 	{
+		anim = GetComponent<Animator>();
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
 		++combat.NinjaCount;
 
 		//initialize variables
-		foot = GameObject.Find ("Foot").GetComponent<Foot>();
 		jumpState = JumpState.GROUNDED;
 		numberOfJumpPoints = jumpPoints.Count;
 		currentJumpPoint = numberOfJumpPoints - 1;
@@ -78,11 +84,11 @@ public class tankNinja : MonoBehaviour {
 		TurnOnTurnCounter (numberOfJumpPoints - currentJumpPoint);
 		if (combat.turn == TurnState.ENEMYSTART)
 		{	
-			if (!stunned) {
+			if (jumpState != JumpState.STUNNED) {
 				jumpState = JumpState.FORWARD;
 			}
 		}
-		if (jumpState == JumpState.FORWARD) {
+		if (jumpState == JumpState.FORWARD && canMove) {
 			JumpForward ();
 		} else if (jumpState == JumpState.KNOCKBACK) {
 			Knockback ();
@@ -93,43 +99,50 @@ public class tankNinja : MonoBehaviour {
 			
 	}
 
+	public void StartAttack()
+	{
+		jumpState = JumpState.FORWARD;
+	}
+
 	//move Ninja to next jump point
 	void JumpForward()
 	{	
-		transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * Time.deltaTime);
-		if (transform.position == jumpPoints[currentJumpPoint].position)
+		transform.position = MoveAlongBezierCurve(currentJumpDuration / jumpDuration);
+		currentJumpDuration += Time.deltaTime;
+		if (currentJumpDuration >= jumpDuration)
 		{
+			transform.position = endJump;
+			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
+			anim.SetInteger("State", 2);
 		}
 	}
 
 	//move ninja to a previous jump point
 	void Knockback()
 	{	
-		transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
-		if (transform.position == jumpPoints[currentJumpPoint].position)
+		transform.position = MoveAlongBezierCurve(currentJumpDuration / jumpDuration);
+		currentJumpDuration += Time.deltaTime;
+		if (currentJumpDuration >= jumpDuration)
 		{
+			transform.position = endJump;
+			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
+			anim.SetInteger("State", 2);
 		}
 	}
 
 	
 	void Stunned()
 	{	
-		//don't knock back if on last jump point, knock back on first hit
-		if (currentJumpPoint != jumpPoints.Count - 1 && stunned_turns == 0) {
-			transform.position = Vector3.MoveTowards (transform.position, jumpPoints [currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
-		}
-			
 		//stay stunned for 3 turns
 		if (combat.turn == TurnState.ENEMYSTART) {
 			++stunned_turns;
-			Debug.Log (stunned_turns);
+			//Debug.Log (stunned_turns);
 		}
-		if(stunned_turns == 3){
-			jumpState = JumpState.GROUNDED;
+		if(stunned_turns == 3) {
+			jumpState = JumpState.FORWARD;
 			stunned_turns = 0;
-			stunned = false;
 		}
 	}
 
@@ -143,18 +156,10 @@ public class tankNinja : MonoBehaviour {
 			if (combat.NinjaCount == 0) {
 				combat.ItemDropPosition = transform.position;
 			}
+			Instantiate (explosion, transform.position, Quaternion.identity);
+			Destroy (this.gameObject);
 
-			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D> ();
-
-			if (footRB.velocity.magnitude / foot.shotSpeedOriginal <= .3f || true) {
-
-			} else {
-				Instantiate (explosion, transform.position, Quaternion.identity);
-				Destroy (this.gameObject);
-			}
-		} else if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot" && !stunned) { 
-			Debug.Log ("stunned");
-			stunned = true;
+		} else if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot") { 
 			jumpState = JumpState.STUNNED;
 		}
 		else if (coll.gameObject.tag == "Player")
@@ -180,6 +185,63 @@ public class tankNinja : MonoBehaviour {
 			{
 				turnCounter[i].TurnOff();
 			}
+		}
+	}
+
+	void GoToIdle()
+	{
+		anim.SetInteger("State", 0);
+		Flip();
+	}
+
+	void CanMove()
+	{
+		canMove = true;
+	}
+	void CantMove()
+	{
+		canMove = false;
+	}
+
+	void Flip()
+	{
+		int nextPos = jumpPoints.Count - 1;
+		if (currentJumpPoint > 0) nextPos = currentJumpPoint - 1;
+
+		if ((jumpPoints[nextPos].position.x > jumpPoints[currentJumpPoint].position.x &&
+			transform.localScale.x < 0) || 
+			(jumpPoints[nextPos].position.x < jumpPoints[currentJumpPoint].position.x &&
+				transform.localScale.x > 0))
+		{
+			Vector3 temp = transform.localScale;
+			temp.x *= -1;
+			transform.localScale = temp;
+		}
+	}
+
+	Vector3 MoveAlongBezierCurve(float t)
+	{
+		float u = 1 - t;
+
+		Vector3 point = u * u * startJump;
+		point += 2 * u * t * midJump;
+		point += t * t * endJump;
+
+		return point;
+	}
+
+	void SetJumpPoints()
+	{
+		startJump = jumpPoints[currentJumpPoint].position;
+		if (currentJumpPoint == 0) endJump = jumpPoints[jumpPoints.Count - 1].position;
+		else endJump = jumpPoints[currentJumpPoint - 1].position;
+		midJump.z = startJump.z;
+		midJump.x = (startJump.x + endJump.x) / 2;
+		midJump.y = Mathf.Max(startJump.y, endJump.y) + Mathf.Abs(((startJump.y + endJump.y) / 2));
+		float height = GetComponent<PolygonCollider2D>().bounds.max.y - transform.position.y;
+		if (midJump.y > CombatController.S.ceilingHeight || transform.position.y + height > CombatController.S.ceilingHeight)
+		{
+			midJump.y = CombatController.S.ceilingHeight - height;
 		}
 	}
 }

@@ -13,6 +13,8 @@ public enum TurnState
 //CONTROLLS THE FLOW OF BATTLE (e.g. who's turn it is)
 public class CombatController : MonoBehaviour {
 
+	public static CombatController S;
+
 	public TurnState _turn;
 	public TurnState turn
 	{
@@ -38,6 +40,9 @@ public class CombatController : MonoBehaviour {
 	}
 
 	public List<Ninja> ninjaList;
+//	public List<tankNinja> ninjaTank;
+//	public List<throwNinja> ninjaThrow;
+//	private bool checkedNinjaNormal = false, checkedNinjaTank = false, checkedNinjaThrow = false;
 
 	public int NinjaCount;
 
@@ -45,10 +50,13 @@ public class CombatController : MonoBehaviour {
 
     public GameObject ItemDrop;
 	public Vector3 ItemDropPosition;
+	private GameObject	ceiling;
+	public float	ceilingHeight;
 
 
     void Awake () {
 		TommysTurn();
+		S = this;
 	}
 	// Use this for initialization
 	void Start () {
@@ -56,28 +64,29 @@ public class CombatController : MonoBehaviour {
         {
             LevelGen.S.GenLevel();
         }
-		for (int i = 0; i < ninjaList.Count; ++i) {
-			++NinjaCount;
-		}
+
+		ceiling = GameObject.Find("Ceiling");
+		ceilingHeight = ceiling.GetComponent<BoxCollider2D>().bounds.min.y;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
-		if (turn == TurnState.TOMMYEND && NinjasDoneMoving())
+		print (NinjaCount);
+		if (turn == TurnState.TOMMYEND)
 		{
 			EnemysTurn();
 		}
-		else if (turn == TurnState.ENEMY && NinjasDoneMoving())
+		else if (turn == TurnState.ENEMY)
 		{
-			TommysTurn();
+			if (NinjasDoneMoving())
+			{
+				TommysTurn();
+			}
 		}
 		else if (turn == TurnState.ENEMYSTART) 
 		{
 			turn = TurnState.ENEMY;
 		}
-
-		//remainingNinjas ();
 
 		if (NinjaCount == 0) 
 		{	
@@ -91,7 +100,6 @@ public class CombatController : MonoBehaviour {
 					Application.LoadLevel (GameManager.S.level);
             }
 		}
-			
 	}
 
 	public void TommysTurn()
@@ -106,6 +114,8 @@ public class CombatController : MonoBehaviour {
 	{
 		turn = TurnState.ENEMYSTART;
 	}
+
+
 
 
 	bool NinjasDoneMoving()

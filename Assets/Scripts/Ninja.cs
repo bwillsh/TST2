@@ -9,10 +9,9 @@ public enum JumpState
 	FORWARD,
 	KNOCKBACK,
 	STUNNED
-
 }
 
-public class Ninja : MonoBehaviour {
+public class Ninja : NinjaParent {
 	public JumpState 		_jumpState;
 	public JumpState		jumpState
 
@@ -25,14 +24,19 @@ public class Ninja : MonoBehaviour {
 			switch(_jumpState)
 			{
 			case JumpState.GROUNDED:
+				anim.SetInteger("State", 2);
 				break;
 			case JumpState.FORWARD:
+				anim.SetInteger("State", 1);
+				SetJumpPoints();
 				currentJumpPoint -= 1;
 				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
 				break;
 			case JumpState.KNOCKBACK:
-				currentJumpPoint += jumpPoints.Count - 1;
-				currentJumpPoint = Mathf.Clamp(currentJumpPoint, 0, numberOfJumpPoints - 1);
+				currentJumpDuration = 0;
+				anim.SetInteger("State", 1);
+				SetJumpPoints();
+				currentJumpPoint = jumpPoints.Count - 1;
 				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
 				break;
 			default:
@@ -49,12 +53,18 @@ public class Ninja : MonoBehaviour {
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
 	private Foot			foot;
+	private Animator 		anim;
+	private bool			moveForward = false; //needed for animation stuff
+	public float			jumpDuration = 3;
+	private float			currentJumpDuration = 0;
+	private Vector3			startJump, endJump, midJump;
 
 	// Use this for initialization
 
 	void Start () 
 	{
 		//initialize variables
+		anim = GetComponent<Animator>();
 		foot = GameObject.Find ("Foot").GetComponent<Foot>();
 		jumpState = JumpState.GROUNDED;
 		numberOfJumpPoints = jumpPoints.Count;
@@ -77,17 +87,18 @@ public class Ninja : MonoBehaviour {
 			turnCounter[0].TurnOn();
 		}
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
+		combat.NinjaCount++;
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-
+		
 		if (combat.turn == TurnState.ENEMYSTART)
 		{
 			jumpState = JumpState.FORWARD;
 		}
-		if (jumpState == JumpState.FORWARD)
+		if (jumpState == JumpState.FORWARD && moveForward)
 		{
 			JumpForward();
 		}
@@ -97,12 +108,20 @@ public class Ninja : MonoBehaviour {
 		}
 	}
 
+	public void StartAttack()
+	{
+		jumpState = JumpState.FORWARD;
+	}
+
 	//move Ninja to next jump point
 	void JumpForward()
 	{
-		transform.position = Vector3.MoveTowards(transform.position, jumpPoints[currentJumpPoint].position, jumpSpeed * Time.deltaTime);
-		if (transform.position == jumpPoints[currentJumpPoint].position)
+		transform.position = MoveAlongBezierCurve(currentJumpDuration / jumpDuration);
+		currentJumpDuration += Time.deltaTime;
+		if (currentJumpDuration >= jumpDuration)
 		{
+			transform.position = endJump;
+			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
 		}
 	}
@@ -110,9 +129,12 @@ public class Ninja : MonoBehaviour {
 	//move ninja to a previous jump point
 	void Knockback()
 	{
-		transform.position = Vector3.MoveTowards(transform.position, jumpPoints[currentJumpPoint].position, jumpSpeed * 2 * Time.deltaTime);
-		if (transform.position == jumpPoints[currentJumpPoint].position)
+		transform.position = MoveAlongBezierCurve(currentJumpDuration / jumpDuration);
+		currentJumpDuration += Time.deltaTime;
+		if (currentJumpDuration >= jumpDuration)
 		{
+			transform.position = endJump;
+			currentJumpDuration = 0;
 			jumpState = JumpState.GROUNDED;
 		}
 	}
@@ -165,6 +187,61 @@ public class Ninja : MonoBehaviour {
 			{
 				turnCounter[i].TurnOff();
 			}
+		}
+	}
+
+	void BackToIdle()
+	{
+		anim.SetInteger("State", 0);
+		Flip();
+	}
+
+	void CanMoveForward()
+	{
+		moveForward = true;
+	}
+	void CantMoveForward()
+	{
+		moveForward = false;
+	}
+
+	void Flip()
+	{
+		int nextPos = jumpPoints.Count - 1;
+		if (currentJumpPoint > 0) nextPos = currentJumpPoint - 1;
+		if ((jumpPoints[nextPos].position.x > jumpPoints[currentJumpPoint].position.x && transform.localScale.x < 0) || 
+			(jumpPoints[nextPos].position.x < jumpPoints[currentJumpPoint].position.x && transform.localScale.x > 0))
+		{
+			Vector3 temp = transform.localScale;
+			temp.x *= -1;
+			transform.localScale = temp;
+		}
+
+	}
+
+	Vector3 MoveAlongBezierCurve(float t)
+	{
+		float u = 1 - t;
+
+		Vector3 point = u * u * startJump;
+		point += 2 * u * t * midJump;
+		point += t * t * endJump;
+
+		return point;
+	}
+
+	void SetJumpPoints()
+	{
+		startJump = jumpPoints[currentJumpPoint].position;
+		if (currentJumpPoint == 0) endJump = jumpPoints[jumpPoints.Count - 1].position;
+		else endJump = jumpPoints[currentJumpPoint - 1].position;
+		midJump.z = startJump.z;
+		midJump.x = (startJump.x + endJump.x) / 2;
+		midJump.y = Mathf.Max(startJump.y, endJump.y) + ((startJump.y + endJump.y) / 2);
+		float height = GetComponent<PolygonCollider2D>().bounds.max.y - transform.position.y;
+		if (midJump.y > CombatController.S.ceilingHeight || transform.position.y + height > CombatController.S.ceilingHeight)
+		{
+			midJump.y = CombatController.S.ceilingHeight - height;
 		}
 	}
 }
