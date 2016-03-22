@@ -1,13 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
-
-
 public class Door : MonoBehaviour {
 
 
-    public string text = "I am a door!";
+	public int loadWhichLevel;
 	// Use this for initialization
 	void Start () {
 	}
@@ -19,7 +16,7 @@ public class Door : MonoBehaviour {
 
     public void Button()
     {
-		Application.LoadLevel (3);
+		Application.LoadLevel (loadWhichLevel);
     }
 
 
