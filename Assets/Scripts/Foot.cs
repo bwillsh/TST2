@@ -333,7 +333,7 @@ public class Foot : MonoBehaviour {
 	void SlowFoot()
 	{
 		//need better slowing equation
-		if (currentShootSpeed > 2)
+		if (currentShootSpeed > shotSpeedOriginal / 1.5f)
 			currentShootSpeed -= 1f;
 		if (transform.position == ricochetPoints[ricochetPoints.Count - 1])
 		{

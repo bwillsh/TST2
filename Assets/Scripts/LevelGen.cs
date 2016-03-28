@@ -103,8 +103,9 @@ public class LevelGen : MonoBehaviour {
         }
         int tryCount = 0;
         for (int i = 0; i < numWalls; i++)
-        { 
-
+        {
+            x = Random.Range(min.x, max.x);
+            y = Random.Range(min.y, max.y);
             //test to see if point is ok
             bool good = false;
             while(!good)

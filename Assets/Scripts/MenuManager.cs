@@ -18,6 +18,10 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void Endless() {
-		Application.LoadLevel ("EndlessLevel");
+		Application.LoadLevel ("endlessStart");
+	}
+
+	public void stix(){
+		Application.LoadLevel ("symbolStix");
 	}
 }

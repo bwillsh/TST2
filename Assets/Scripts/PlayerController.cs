@@ -3,9 +3,11 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
+	public bool	startMoving = true;
     public GameObject cur = null;
 	public Animator anim;
 	public bool facingRight = true;
+	public bool touching;
 
     public static PlayerController S;
     void Awake()
@@ -15,11 +17,12 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		anim = GetComponent<Animator>();
+		anim.SetBool ("Moving", startMoving);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+			
 	}
 
     //If the player collides with an interactable object, saves it in cur
