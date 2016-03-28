@@ -4,7 +4,7 @@ using System.Collections;
 public class Door : MonoBehaviour {
 
 
-	public int loadWhichLevel;
+	public string loadWhichLevel;
 	// Use this for initialization
 	void Start () {
 	}

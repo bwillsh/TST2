@@ -14,7 +14,7 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void Play() {
-		Application.LoadLevel (2);
+		Application.LoadLevel ("OpenCutscene");
 	}
 
 	public void Endless() {
