@@ -27,7 +27,7 @@ public class Wheelchair : MonoBehaviour {
 
 		if (coll.gameObject.tag == "Ninja" || coll.gameObject.tag == "NinjaStar")
 		{
-			health.lowerHealth(0.2f);
+			health.lowerHealth(.2f);
 		}
 	}
 }

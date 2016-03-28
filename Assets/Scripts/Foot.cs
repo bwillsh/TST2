@@ -305,7 +305,7 @@ public class Foot : MonoBehaviour {
 	//once the foot has reached a certain point the state will change to SLOWING
 	void ShootFoot() 
 	{
-		if (distanceTraveled >= attackStrength * maxShotDistance * startSlowingDistance)
+		if (distanceTraveled >= attackStrength * maxShotDistance * startSlowingDistance / 2)
 		{
 			attackState = AttackState.SLOWING;
 			return;
@@ -333,8 +333,8 @@ public class Foot : MonoBehaviour {
 	void SlowFoot()
 	{
 		//need better slowing equation
-		if (currentShootSpeed > shotSpeedOriginal / 1.5f)
-			currentShootSpeed -= 1f;
+		if (currentShootSpeed > shotSpeedOriginal / 1.3f)
+			currentShootSpeed -= .1f;
 		if (transform.position == ricochetPoints[ricochetPoints.Count - 1])
 		{
 			attackState = AttackState.RETURNING;

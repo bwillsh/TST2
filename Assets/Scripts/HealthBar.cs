@@ -22,7 +22,6 @@ public class HealthBar : MonoBehaviour {
 
 	public void lowerHealth(float n)
 	{
-		print ("ERERER");
 		wantedHealth -= n;
 		if (wantedHealth < 0)
 		{
