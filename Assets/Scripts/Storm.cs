@@ -18,7 +18,10 @@ public class Storm : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+	    if(Input.GetKeyDown(KeyCode.A))
+        {
+            Application.LoadLevel("overWorld_2_ben");
+        }
 	}
 
 	void OnTriggerEnter2D(Collider2D coll) {
@@ -43,4 +46,5 @@ public class Storm : MonoBehaviour {
 		myRenderer.sprite = storm;
 		Application.LoadLevel ("overWorld_2_ben");
 	}
+
 }

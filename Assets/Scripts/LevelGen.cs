@@ -73,7 +73,7 @@ public class LevelGen : MonoBehaviour {
         for (int i = 0; i < numNinjas; i++)
         {
             //spawns a ninja on edge of screen
-            x = Random.Range(15f, 17);
+            x = Random.Range(-7f, -5);
             y = Random.Range(min.y, max.y);
             Ninja clone = (Ninja)Instantiate(ninja, new Vector3(x, y, -1), Quaternion.identity);
 
@@ -83,10 +83,11 @@ public class LevelGen : MonoBehaviour {
 
             //set up jump points at equal intervals
             float jx = x;
-            float dec = (x - Foot.S.transform.position.x) / numJumps;
+            float inc = (Foot.S.transform.position.x - x) / numJumps;
             for (int j = 1; j < numJumps; j++)
             {
-                jx -= dec;
+                print("Jump point " + j);
+                jx += inc;
                 float jy = Random.Range(min.y, max.y);
                 GameObject tpoint = (GameObject)Instantiate(empty, new Vector3(jx, jy, -1), Quaternion.identity);
                 clone.jumpPoints.Add(tpoint.transform);
