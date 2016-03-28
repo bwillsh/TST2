@@ -18,6 +18,10 @@ public class HealthBar : MonoBehaviour {
 		{
 			dropHealth();
 		}
+		if (currentHealth <= 0)
+		{
+			Application.LoadLevel (Application.loadedLevel);
+		}
 	}
 
 	public void lowerHealth(float n)
