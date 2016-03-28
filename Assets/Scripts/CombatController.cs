@@ -71,7 +71,7 @@ public class CombatController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		print (NinjaCount);
+		//print (NinjaCount);
 		if (turn == TurnState.TOMMYEND)
 		{
 			EnemysTurn();
