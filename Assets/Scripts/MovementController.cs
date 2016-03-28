@@ -3,7 +3,11 @@ using System.Collections;
 
 public class MovementController : MonoBehaviour {
 
+	public static MovementController S;
+
     private Vector2 mousePos;
+
+	public bool disableControls = false;
 
 
     //Used to figure out the hit box of the buttons
@@ -20,9 +24,14 @@ public class MovementController : MonoBehaviour {
     //speed must be changed in the unity editor, at least for right now.
     public float speed = 5;
 
+	void Awake () {
+		S = this;
+	}
+
     // Use this for initialization
     void Start () {
         background.transform.position = GameManager.S.backPos;
+		disableControls = false;
 	}
 	
 	// Update is called once per frame
@@ -31,36 +40,38 @@ public class MovementController : MonoBehaviour {
         //copied from Foot.cs
         UpdateMousePos();
 
-        
-        if(Input.GetMouseButtonDown(0)) //returns true if this is the first frame that the LMB was pressed, good for button presses
-        {
-            if(mousePos.x >= buttonPos.x - squareSize && mousePos.x <= buttonPos.x + squareSize
-                && mousePos.y >= buttonPos.y - squareSize && mousePos.y <= buttonPos.y + squareSize) //Math to check to see if the mouse is inside a hit box for a button
-            {
-				ButtonPressed();
-            }
-        }
+		if (!disableControls)
+		{
+	        if(Input.GetMouseButtonDown(0)) //returns true if this is the first frame that the LMB was pressed, good for button presses
+	        {
+	            if(mousePos.x >= buttonPos.x - squareSize && mousePos.x <= buttonPos.x + squareSize
+	                && mousePos.y >= buttonPos.y - squareSize && mousePos.y <= buttonPos.y + squareSize) //Math to check to see if the mouse is inside a hit box for a button
+	            {
+					ButtonPressed();
+	            }
+	        }
 
-        if (Input.GetMouseButton(0)) //returns true if LMB is pressed in this frame, good for button holds
-        {
-            if (mousePos.x >= leftPos.x - squareSize && mousePos.x <= leftPos.x + squareSize
-                && mousePos.y >= leftPos.y - squareSize && mousePos.y <= leftPos.y + squareSize)//More math
-            {
-                GoLeft();
-				if (PlayerController.S.facingRight) PlayerController.S.Flip();
-				if (!PlayerController.S.anim.GetBool("Moving")) PlayerController.S.Move(true);
-				
-            }
-            else if (mousePos.x >= rightPos.x - squareSize && mousePos.x <= rightPos.x + squareSize
-                && mousePos.y >= rightPos.y - squareSize && mousePos.y <= rightPos.y + squareSize)
-            {
-                GoRight();
-				if (!PlayerController.S.facingRight) PlayerController.S.Flip();
-				if (!PlayerController.S.anim.GetBool("Moving")) PlayerController.S.Move(true);
-            }
-        }
+	        if (Input.GetMouseButton(0)) //returns true if LMB is pressed in this frame, good for button holds
+	        {
+	            if (mousePos.x >= leftPos.x - squareSize && mousePos.x <= leftPos.x + squareSize
+	                && mousePos.y >= leftPos.y - squareSize && mousePos.y <= leftPos.y + squareSize)//More math
+	            {
+	                GoLeft();
+					if (PlayerController.S.facingRight) PlayerController.S.Flip();
+					if (!PlayerController.S.anim.GetBool("Moving")) PlayerController.S.Move(true);
+					
+	            }
+	            else if (mousePos.x >= rightPos.x - squareSize && mousePos.x <= rightPos.x + squareSize
+	                && mousePos.y >= rightPos.y - squareSize && mousePos.y <= rightPos.y + squareSize)
+	            {
+	                GoRight();
+					if (!PlayerController.S.facingRight) PlayerController.S.Flip();
+					if (!PlayerController.S.anim.GetBool("Moving")) PlayerController.S.Move(true);
+	            }
+	        }
+		}
 
-		if (Input.GetMouseButtonUp(0))
+		if (Input.GetMouseButtonUp(0) || disableControls)
 		{
 			PlayerController.S.Move(false);
 		}
