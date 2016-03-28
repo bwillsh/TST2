@@ -18,9 +18,9 @@ public class Storm : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    if(Input.GetKeyDown(KeyCode.A))
+		if(Input.GetKeyDown(KeyCode.A) || Input.GetMouseButtonDown(0))
         {
-            Application.LoadLevel("overWorld_2_ben");
+            Application.LoadLevel("overWorld_Beta");
         }
 	}
 
@@ -44,7 +44,7 @@ public class Storm : MonoBehaviour {
 		Instantiate (lightningparticle, transform.position, transform.rotation);
 		yield return new WaitForSeconds(1);
 		myRenderer.sprite = storm;
-		Application.LoadLevel ("overWorld_2_ben");
+		Application.LoadLevel ("overWorld_Beta");
 	}
 
 }
