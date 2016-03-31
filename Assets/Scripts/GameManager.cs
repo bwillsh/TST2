@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour {
     //Updated each frame you move
     public Vector2 backPos = new Vector2(0, 2.75f);
     public int level = 2;
+    public string levelName = "null";
+    public string realLevelName = "null";
 	public string currentItem;
 
 
@@ -45,7 +47,8 @@ public class GameManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if(Application.loadedLevelName != "")
+
+        if(Application.loadedLevelName != "" && Application.loadedLevelName != null )
         {
             PlayerPrefs.SetString("Level", Application.loadedLevelName);
             PlayerPrefs.SetFloat("BackX", backPos.x);
@@ -54,7 +57,8 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            print("WHY IS THIS HAPPENING");
+            //print("WHY IS THIS HAPPENING: " + Application.loadedLevel);
+
         }
         
         if(Input.GetKeyDown(KeyCode.P))
@@ -65,5 +69,7 @@ public class GameManager : MonoBehaviour {
             PlayerPrefs.Save();
             Application.LoadLevel("Menu");
         }
+        realLevelName = Application.loadedLevelName;
+        levelName = PlayerPrefs.GetString("Level");
     }
 }
