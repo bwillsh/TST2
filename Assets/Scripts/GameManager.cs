@@ -15,27 +15,55 @@ public class GameManager : MonoBehaviour {
     void Awake()
     {
         S = this;
+        DontDestroyOnLoad(this.gameObject);
+        print("Saved Level: " + PlayerPrefs.GetString("Level"));
+        backPos.x = PlayerPrefs.GetFloat("BackX");
+        backPos.y = PlayerPrefs.GetFloat("BackY");
+        if(PlayerPrefs.GetString("Level") == "")
+        {
+            print("Uh Oh");
+            backPos.x = 0;
+            backPos.y = 2.75f;
+            PlayerPrefs.SetFloat("BackX", 0);
+            PlayerPrefs.SetFloat("BackY", 2.75f);
+            PlayerPrefs.Save();
+        }
+        if (PlayerPrefs.GetString("Level") != "Menu")
+        {
+            print("Loading new level");
+            Application.LoadLevel(PlayerPrefs.GetString("Level"));
+        }
     }
 	// Use this for initialization
 	void Start () {
         //vital for keeping the GameManager in each scene
-        DontDestroyOnLoad(this.gameObject);
+       
+        
+
     }
-	
-	// Update is called once per frame
-	void Update () {
-        //Swicthing scenes when tab is pressed, until we implment something else
-	    if(Input.GetKeyDown(KeyCode.Tab))
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(Application.loadedLevelName != "")
         {
-            //switches between overworld and battle scene
-            if(Application.loadedLevel == 2)
-            {
-                Application.LoadLevel(1);
-            }
-            else
-            {
-                Application.LoadLevel(2);
-            }
+            PlayerPrefs.SetString("Level", Application.loadedLevelName);
+            PlayerPrefs.SetFloat("BackX", backPos.x);
+            PlayerPrefs.SetFloat("BackY", backPos.y);
+            PlayerPrefs.Save();
         }
-	}
+        else
+        {
+            print("WHY IS THIS HAPPENING");
+        }
+        
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            PlayerPrefs.SetString("Level", "Menu");
+            PlayerPrefs.SetFloat("BackX", 0);
+            PlayerPrefs.SetFloat("BackY", 2.75f);
+            PlayerPrefs.Save();
+            Application.LoadLevel("Menu");
+        }
+    }
 }
