@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
     public Vector2 backPos = new Vector2(0, 2.75f);
     public int level = 2;
     public string levelName = "null";
+    public string loader = "null";
     public string realLevelName = "null";
 	public string currentItem;
 
@@ -17,6 +18,10 @@ public class GameManager : MonoBehaviour {
     void Awake()
     {
         S = this;
+        if(Application.loadedLevel != null)
+        {
+            loader = Application.loadedLevelName;
+        }
         DontDestroyOnLoad(this.gameObject);
         print("Saved Level: " + PlayerPrefs.GetString("Level"));
         backPos.x = PlayerPrefs.GetFloat("BackX");
@@ -30,7 +35,7 @@ public class GameManager : MonoBehaviour {
             PlayerPrefs.SetFloat("BackY", 2.75f);
             PlayerPrefs.Save();
         }
-        if (PlayerPrefs.GetString("Level") != "Menu")
+        if (PlayerPrefs.GetString("Level") != "Menu" && Application.loadedLevelName == "Menu")
         {
             print("Loading new level");
             Application.LoadLevel(PlayerPrefs.GetString("Level"));
@@ -61,13 +66,23 @@ public class GameManager : MonoBehaviour {
 
         }
         
-        if(Input.GetKeyDown(KeyCode.P))
+        if(Input.GetKeyDown(KeyCode.M))
         {
             PlayerPrefs.SetString("Level", "Menu");
             PlayerPrefs.SetFloat("BackX", 0);
             PlayerPrefs.SetFloat("BackY", 2.75f);
+            backPos = new Vector2(0, 2.75f);
             PlayerPrefs.Save();
             Application.LoadLevel("Menu");
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            PlayerPrefs.SetString("Level", loader);
+            PlayerPrefs.SetFloat("BackX", 0);
+            PlayerPrefs.SetFloat("BackY", 2.75f);
+            backPos = new Vector2(0, 2.75f);
+            PlayerPrefs.Save();
+            Application.LoadLevel(loader);
         }
         realLevelName = Application.loadedLevelName;
         levelName = PlayerPrefs.GetString("Level");
