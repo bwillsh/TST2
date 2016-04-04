@@ -15,6 +15,9 @@ public class LevelGen : MonoBehaviour {
     public int numJumps = 4;
 
     public GameObject wall;
+  
+
+
     public Ninja ninja;
     public GameObject empty;
 
@@ -24,6 +27,12 @@ public class LevelGen : MonoBehaviour {
 
     public List<GameObject> wallList;
 
+
+    public GameObject desk1;
+    public GameObject desk2;
+    public GameObject lightfix;
+    public GameObject chair;
+    List<GameObject> collList;
     public static LevelGen S;
     void Awake()
     {
@@ -40,7 +49,11 @@ public class LevelGen : MonoBehaviour {
             combat = GameObject.Find("CombatController").GetComponent<CombatController>();
             FootPos = Foot.S.transform.position;
         }
-        
+        collList = new List<GameObject>();    
+        collList.Add(desk1);
+        collList.Add(desk2);
+        collList.Add(lightfix);
+        collList.Add(chair);
     }
 	
 	// Update is called once per frame
@@ -156,7 +169,9 @@ public class LevelGen : MonoBehaviour {
             //If all good, add wall to the world
             if(good)
             {
-                wallList.Add((GameObject)Instantiate(wall, new Vector3(x, y, -1), Quaternion.Euler(0, 0, Random.Range(0, 180))));
+                int num = Random.Range(0, collList.Count);
+                GameObject go = collList[num];
+                wallList.Add((GameObject)Instantiate(go, new Vector3(x, y, -1), Quaternion.Euler(0, 0, Random.Range(0, 180))));
                 tryCount = 0;
             }
             //if not good, stop adding walls. even if you are not at numWalls

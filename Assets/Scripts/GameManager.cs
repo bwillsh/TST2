@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour {
         print("Saved Level: " + PlayerPrefs.GetString("Level"));
         backPos.x = PlayerPrefs.GetFloat("BackX");
         backPos.y = PlayerPrefs.GetFloat("BackY");
+        currentItem = PlayerPrefs.GetString("Inv");
         if(PlayerPrefs.GetString("Level") == "")
         {
             print("Uh Oh");
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour {
             PlayerPrefs.SetString("Level", Application.loadedLevelName);
             PlayerPrefs.SetFloat("BackX", backPos.x);
             PlayerPrefs.SetFloat("BackY", backPos.y);
+            PlayerPrefs.SetString("Inv", currentItem);
             PlayerPrefs.Save();
         }
         else
@@ -72,6 +74,7 @@ public class GameManager : MonoBehaviour {
             PlayerPrefs.SetString("Level", "Menu");
             PlayerPrefs.SetFloat("BackX", 0);
             PlayerPrefs.SetFloat("BackY", 2.75f);
+            PlayerPrefs.SetString("Inv", "");
             backPos = new Vector2(0, 2.75f);
             PlayerPrefs.Save();
             Application.LoadLevel("Menu");
