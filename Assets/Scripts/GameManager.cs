@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour {
     public string loader = "null";
     public string realLevelName = "null";
 	public string currentItem;
-
+	public List<string> levelsBeaten;
+	public string currentHall;
 
     public static GameManager S;
     void Awake()
@@ -87,4 +88,15 @@ public class GameManager : MonoBehaviour {
         realLevelName = Application.loadedLevelName;
         levelName = PlayerPrefs.GetString("Level");
     }
+
+	public bool IsHallBeaten() {
+		switch (currentHall) {
+		case "1":
+			return levelsBeaten.Contains ("combat_Tutorial");
+		case "2":
+			return levelsBeaten.Contains ("combat_Beta_1") && levelsBeaten.Contains ("combat_Beta_2") && levelsBeaten.Contains ("combat_Beta_3");
+		default:
+			return false;
+		}
+	}
 }
