@@ -8,7 +8,7 @@ public class TurnCounter : MonoBehaviour {
 	private Material	mat;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		mat = GetComponent<Renderer>().material;
 		mat.color = offColor;
 	}

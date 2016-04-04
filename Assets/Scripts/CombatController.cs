@@ -53,7 +53,6 @@ public class CombatController : MonoBehaviour {
 	private GameObject	ceiling;
 	public float	ceilingHeight;
 
-
     void Awake () {
 		TommysTurn();
 		S = this;
@@ -94,10 +93,17 @@ public class CombatController : MonoBehaviour {
 
 				if (generatedLevel)
 					Application.LoadLevel (Application.loadedLevel);
-				else if (ItemDrop != null)
-					Instantiate (ItemDrop, ItemDropPosition, Quaternion.identity);
-				else
-					Application.LoadLevel (GameManager.S.level);
+				else {
+					if (!GameManager.S.levelsBeaten.Contains (Application.loadedLevelName)) {
+						GameManager.S.levelsBeaten.Add (Application.loadedLevelName);
+					}
+					if (GameManager.S.IsHallBeaten ()) {
+						Instantiate (ItemDrop, ItemDropPosition, Quaternion.identity);
+					} else {
+						print ("Loading level " + GameManager.S.level);
+						Application.LoadLevel (GameManager.S.level);
+					}
+				}
             }
 		}
 	}
