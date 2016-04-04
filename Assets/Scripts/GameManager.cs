@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour {
     //what the background position is
     //Updated each frame you move
     public Vector2 backPos = new Vector2(0, 2.75f);
-    public int level = 2;
+    public int level = 5;
     public string levelName = "null";
     public string loader = "null";
     public string realLevelName = "null";
