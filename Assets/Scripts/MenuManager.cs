@@ -21,7 +21,7 @@ public class MenuManager : MonoBehaviour {
 		Application.LoadLevel ("endlessStart");
 	}
 
-	public void stix(){
-		Application.LoadLevel ("symbolStix");
+	public void Select(){
+		Application.LoadLevel ("Select_Hall1");
 	}
 }

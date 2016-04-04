@@ -8,6 +8,8 @@ public class Storm : MonoBehaviour {
 	public Sprite storm;
 	public Sprite lightning;
 	public GameObject lightningparticle;
+	public GameObject foot;
+	public float footSpeed;
 
 	// Use this for initialization
 	void Start () {
@@ -44,6 +46,9 @@ public class Storm : MonoBehaviour {
 		Instantiate (lightningparticle, transform.position, transform.rotation);
 		yield return new WaitForSeconds(1);
 		myRenderer.sprite = storm;
+		GameObject obj = (GameObject)Instantiate (foot, transform.position, transform.rotation);
+		obj.GetComponent<Rigidbody2D> ().velocity = new Vector2(2f * footSpeed, footSpeed);
+		yield return new WaitForSeconds(3);
 		Application.LoadLevel ("overWorld_Beta");
 	}
 
