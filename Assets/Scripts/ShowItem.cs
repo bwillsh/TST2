@@ -9,8 +9,10 @@ public class ShowItem : MonoBehaviour {
 	private bool inDialog = false;
 	private Vector2 mousePos;
 
+
 	float squareSize = 1.5f;
 	Vector2 buttonPos = new Vector2( -.14f, -3 );
+
 
 	// Use this for initialization
 	void Start () {
@@ -59,7 +61,14 @@ public class ShowItem : MonoBehaviour {
 			GameManager.S.currentItem = null;
 			print ("Making particles");
 			Instantiate (unlockParticle, transform.position, transform.rotation);
-			Application.LoadLevel ("Menu");
+			StartCoroutine (wait());
 		}
 	}
+
+	IEnumerator wait() {
+		yield return new WaitForSeconds (2);
+		Application.LoadLevel ("Menu");
+	}
+
+
 }
