@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour {
     public string loader = "null";
     public string realLevelName = "null";
 	public string currentItem;
-
+	public List<string> levelsBeaten;
+	public string currentHall;
 
     public static GameManager S;
     void Awake()
@@ -26,6 +27,7 @@ public class GameManager : MonoBehaviour {
         print("Saved Level: " + PlayerPrefs.GetString("Level"));
         backPos.x = PlayerPrefs.GetFloat("BackX");
         backPos.y = PlayerPrefs.GetFloat("BackY");
+        currentItem = PlayerPrefs.GetString("Inv");
         if(PlayerPrefs.GetString("Level") == "")
         {
             print("Uh Oh");
@@ -58,6 +60,7 @@ public class GameManager : MonoBehaviour {
             PlayerPrefs.SetString("Level", Application.loadedLevelName);
             PlayerPrefs.SetFloat("BackX", backPos.x);
             PlayerPrefs.SetFloat("BackY", backPos.y);
+            PlayerPrefs.SetString("Inv", currentItem);
             PlayerPrefs.Save();
         }
         else
@@ -71,6 +74,7 @@ public class GameManager : MonoBehaviour {
             PlayerPrefs.SetString("Level", "Menu");
             PlayerPrefs.SetFloat("BackX", 0);
             PlayerPrefs.SetFloat("BackY", 2.75f);
+            PlayerPrefs.SetString("Inv", "");
             backPos = new Vector2(0, 2.75f);
             PlayerPrefs.Save();
             Application.LoadLevel("Menu");
@@ -87,4 +91,15 @@ public class GameManager : MonoBehaviour {
         realLevelName = Application.loadedLevelName;
         levelName = PlayerPrefs.GetString("Level");
     }
+
+	public bool IsHallBeaten() {
+		switch (currentHall) {
+		case "1":
+			return levelsBeaten.Contains ("combat_Tutorial");
+		case "2":
+			return levelsBeaten.Contains ("combat_Beta_1") && levelsBeaten.Contains ("combat_Beta_2") && levelsBeaten.Contains ("combat_Beta_3");
+		default:
+			return false;
+		}
+	}
 }
