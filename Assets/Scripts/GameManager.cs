@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour {
     {
         S = this;
         DontDestroyOnLoad(this.gameObject);
+        Input.multiTouchEnabled = false;
 
         if (Application.loadedLevel != null)
         {
