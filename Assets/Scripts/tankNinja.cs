@@ -75,7 +75,6 @@ public class tankNinja : NinjaParent {
 		float spacing = 0;
 		if ((numberOfJumpPoints - 1) % 2 == 0) spacing = (spaceOfCounters / ((numberOfJumpPoints - 1) * 2)) * (numberOfJumpPoints - 2);
 		else spacing = (spaceOfCounters / (numberOfJumpPoints - 1)) * ((numberOfJumpPoints - 1) / 2);
-		print (spacing);
 		for (int i = 0; i < numberOfJumpPoints - 1; ++i)
 		{
 			float num = i * (spaceOfCounters / (numberOfJumpPoints - 1));
