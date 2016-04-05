@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour {
     void Awake()
     {
         S = this;
+		Input.multiTouchEnabled = false;
         if(Application.loadedLevel != null)
         {
             loader = Application.loadedLevelName;
