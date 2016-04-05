@@ -95,7 +95,8 @@ public class CombatController : MonoBehaviour {
 					Application.LoadLevel (Application.loadedLevel);
 				else {
 					if (!GameManager.S.levelsBeaten.Contains (Application.loadedLevelName)) {
-						GameManager.S.levelsBeaten.Add (Application.loadedLevelName);
+                        //GameManager.S.levelsBeaten.Add (Application.loadedLevelName);
+                        GameManager.S.BeatLevel(Application.loadedLevelName);
 					}
 					if (GameManager.S.IsHallBeaten ()) {
 						Instantiate (ItemDrop, ItemDropPosition, Quaternion.identity);
