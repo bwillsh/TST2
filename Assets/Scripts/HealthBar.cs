@@ -9,7 +9,7 @@ public class HealthBar : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		
 	}
 	
 	// Update is called once per frame
@@ -20,7 +20,7 @@ public class HealthBar : MonoBehaviour {
 		}
 		if (currentHealth <= 0)
 		{
-			Application.LoadLevel (Application.loadedLevel);
+			Application.LoadLevel (GameManager.S.level);
 		}
 	}
 

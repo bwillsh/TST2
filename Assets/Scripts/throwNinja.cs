@@ -43,11 +43,13 @@ public class throwNinja : NinjaParent {
 		}
 	}
 
+	public GameObject turnCounterObject;
 	public int current_turn;
 	private CombatController combat; //the combat script that keeps track of the combat flow
 	public ParticleSystem	explosion; //the particle system that makes the ninja explode
-	public List<TurnCounter> turnCounter;
-	public int max_turns;
+	private List<TurnCounter> turnCounter;
+	public float spaceOfCounters = 2.3f;
+	public int max_turns = 4;
 	public GameObject NinjaStar;
 	public float speed;
 	public Sprite ninjaStar;
@@ -64,21 +66,24 @@ public class throwNinja : NinjaParent {
 
 		current_turn = 0;
 
-		//get star component
-
-		foreach (Transform child in transform)
+		turnCounter = new List<TurnCounter>();
+		float spacing = 0;
+		if (max_turns % 2 == 0) spacing = (spaceOfCounters / (max_turns * 2)) * (max_turns - 1);
+		else spacing = (spaceOfCounters / max_turns) * (max_turns / 2);
+		for (int i = 0; i < max_turns; ++i)
 		{
-			if (child.GetComponent<TurnCounter>() != null)
-			{
-				turnCounter.Add(child.GetComponent<TurnCounter>());
-			}
+			float num = i * (spaceOfCounters / max_turns);
+			Vector3 spot = new Vector3(transform.position.x + num - spacing, transform.position.y + 2f, transform.position.z);
+			GameObject go = Instantiate(turnCounterObject, spot, Quaternion.identity) as GameObject;
+			turnCounter.Add(go.GetComponent<TurnCounter>());
+			go.transform.parent = transform;
+			if (i == max_turns - 2) go.GetComponent<TurnCounter>().onColor = Color.yellow;
+			if (i == max_turns - 1) go.GetComponent<TurnCounter>().onColor = Color.red;
 		}
-		max_turns = turnCounter.Count;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
 		if (current_turn == max_turns) {
 			if (current_turn > 0)
 				NextState();
@@ -133,7 +138,17 @@ public class throwNinja : NinjaParent {
 
 	void NextAnimationState()
 	{
-		animationState++;
+		if (max_turns == 3 && animationState == 1) {
+			print ("1");
+			animationState += 2; //skip one animation
+		}
+		else if (max_turns > 4 && current_turn > 3 && current_turn != max_turns) 
+			print ("2");
+		else {
+			print ("3");
+			animationState++;
+		}
+		print ("AnimState: " + animationState);
 		anim.SetInteger("State", animationState);
 	}
 
@@ -145,13 +160,17 @@ public class throwNinja : NinjaParent {
 			throwing = ThrowState.STAGE1;
 			break;
 		case ThrowState.STAGE1:
-			throwing = ThrowState.STAGE2;
+			if (max_turns == 3)
+				throwing = ThrowState.STAGE3;
+			else 
+				throwing = ThrowState.STAGE2;
 			break;
 		case ThrowState.STAGE2:
 			throwing = ThrowState.STAGE3;
 			break;
 		case ThrowState.STAGE3:
-			throwing = ThrowState.THROWING;
+			if (current_turn == max_turns)
+				throwing = ThrowState.THROWING;
 			break;
 		}
 	}

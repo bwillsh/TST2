@@ -38,7 +38,9 @@ public class tankNinja : NinjaParent {
 	}
 
 	public List<Transform>  jumpPoints; //a list of empty Transforms for the ninja to jump to
-	public List<TurnCounter> turnCounter;
+	private List<TurnCounter> turnCounter;
+	public GameObject		turnCounterObject;
+	public float			spaceOfCounters = 2.3f;
 	public int				numberOfJumpPoints; //the total number of jump points for this ninja
 	public int				currentJumpPoint; //which jump point the ninja is currently on
 	public float			jumpSpeed; //the speed to jump between positions
@@ -69,12 +71,19 @@ public class tankNinja : NinjaParent {
 			temp.z = transform.position.z;
 			jumpPoints[i].position = temp;
 		}
-		foreach (Transform child in transform)
+		turnCounter = new List<TurnCounter>();
+		float spacing = 0;
+		if ((numberOfJumpPoints - 1) % 2 == 0) spacing = (spaceOfCounters / ((numberOfJumpPoints - 1) * 2)) * (numberOfJumpPoints - 2);
+		else spacing = (spaceOfCounters / (numberOfJumpPoints - 1)) * ((numberOfJumpPoints - 1) / 2);
+		for (int i = 0; i < numberOfJumpPoints - 1; ++i)
 		{
-			if (child.GetComponent<TurnCounter>() != null)
-			{
-				turnCounter.Add(child.GetComponent<TurnCounter>());
-			}
+			float num = i * (spaceOfCounters / (numberOfJumpPoints - 1));
+			Vector3 spot = new Vector3(transform.position.x + num - spacing, transform.position.y + 2f, transform.position.z);
+			GameObject go = Instantiate(turnCounterObject, spot, Quaternion.identity) as GameObject;
+			turnCounter.Add(go.GetComponent<TurnCounter>());
+			go.transform.parent = transform;
+			if (i == numberOfJumpPoints - 3) go.GetComponent<TurnCounter>().onColor = Color.yellow;
+			if (i == numberOfJumpPoints - 2) go.GetComponent<TurnCounter>().onColor = Color.red;
 		}
 	}
 

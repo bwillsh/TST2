@@ -49,7 +49,7 @@ public class Storm : MonoBehaviour {
 		GameObject obj = (GameObject)Instantiate (foot, transform.position, transform.rotation);
 		obj.GetComponent<Rigidbody2D> ().velocity = new Vector2(2f * footSpeed, footSpeed);
 		yield return new WaitForSeconds(3);
-		Application.LoadLevel ("overWorld_Beta");
+		Application.LoadLevel ("combat_Tutorial");
 	}
 
 }
