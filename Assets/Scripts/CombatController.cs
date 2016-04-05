@@ -40,9 +40,6 @@ public class CombatController : MonoBehaviour {
 	}
 
 	public List<Ninja> ninjaList;
-//	public List<tankNinja> ninjaTank;
-//	public List<throwNinja> ninjaThrow;
-//	private bool checkedNinjaNormal = false, checkedNinjaTank = false, checkedNinjaThrow = false;
 
 	public int NinjaCount;
 
@@ -56,6 +53,7 @@ public class CombatController : MonoBehaviour {
     void Awake () {
 		TommysTurn();
 		S = this;
+		Input.multiTouchEnabled = false;
 	}
 	// Use this for initialization
 	void Start () {
