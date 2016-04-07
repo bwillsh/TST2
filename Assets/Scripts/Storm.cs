@@ -14,6 +14,7 @@ public class Storm : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		myRenderer = GetComponentInParent<SpriteRenderer> ();
+		GameManager.S.level = 5;
 //		clear = Resources.Load<Sprite>("Outside");
 //		storm = Resources.Load<Sprite>("OutsideStorm");
 	}

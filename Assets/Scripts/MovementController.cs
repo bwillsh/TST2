@@ -8,6 +8,8 @@ public class MovementController : MonoBehaviour {
     private Vector2 mousePos;
 
 	public bool disableControls = false;
+	bool rightHeld = false;
+	bool leftHeld = false;
 
 
     //Used to figure out the hit box of the buttons
@@ -36,39 +38,34 @@ public class MovementController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (!disableControls) {
+			if (leftHeld) {
+				Vector2 bpos = background.transform.position;
+				bpos.x += speed * Time.deltaTime;
+				if (bpos.x > mapEdge)
+					bpos.x = mapEdge;
+				background.transform.position = bpos;
 
-        //copied from Foot.cs
-        UpdateMousePos();
+				//updates the gameManager to current position
+				GameManager.S.backPos = bpos;
 
-		if (!disableControls)
-		{
-	        if(Input.GetMouseButtonDown(0)) //returns true if this is the first frame that the LMB was pressed, good for button presses
-	        {
-	            if(mousePos.x >= buttonPos.x - squareSize && mousePos.x <= buttonPos.x + squareSize
-	                && mousePos.y >= buttonPos.y - squareSize && mousePos.y <= buttonPos.y + squareSize) //Math to check to see if the mouse is inside a hit box for a button
-	            {
-					ButtonPressed();
-	            }
-	        }
+				if (PlayerController.S.facingRight) PlayerController.S.Flip();
+				if (!PlayerController.S.anim.GetBool("Moving")) PlayerController.S.Move(true);
+			} else if (rightHeld) {
+				Vector2 bpos = background.transform.position;
+				bpos.x -= speed * Time.deltaTime;
+				if (bpos.x < -mapEdge)
+				{
+					bpos.x = -mapEdge;
+				}
 
-	        if (Input.GetMouseButton(0)) //returns true if LMB is pressed in this frame, good for button holds
-	        {
-	            if (mousePos.x >= leftPos.x - squareSize && mousePos.x <= leftPos.x + squareSize
-	                && mousePos.y >= leftPos.y - squareSize && mousePos.y <= leftPos.y + squareSize)//More math
-	            {
-	                GoLeft();
-					if (PlayerController.S.facingRight) PlayerController.S.Flip();
-					if (!PlayerController.S.anim.GetBool("Moving")) PlayerController.S.Move(true);
-					
-	            }
-	            else if (mousePos.x >= rightPos.x - squareSize && mousePos.x <= rightPos.x + squareSize
-	                && mousePos.y >= rightPos.y - squareSize && mousePos.y <= rightPos.y + squareSize)
-	            {
-	                GoRight();
-					if (!PlayerController.S.facingRight) PlayerController.S.Flip();
-					if (!PlayerController.S.anim.GetBool("Moving")) PlayerController.S.Move(true);
-	            }
-	        }
+				background.transform.position = bpos;
+				GameManager.S.backPos = bpos;
+
+				if (!PlayerController.S.facingRight) PlayerController.S.Flip();
+				if (!PlayerController.S.anim.GetBool("Moving")) PlayerController.S.Move(true);
+
+			}
 		}
 
 		if (Input.GetMouseButtonUp(0) || disableControls)
@@ -77,44 +74,24 @@ public class MovementController : MonoBehaviour {
 		}
     }
 
-    void UpdateMousePos()
-    {
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10.0f));
-        mousePos = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
-    }
-
-
-    //Let's the playerController know the button was pressed
-    void ButtonPressed()
-    {
-        PlayerController.S.ButtonPressed();
-    }
-
     //updates the background object's position
     //the player character is static, so GoLeft() moves the background right
-    void GoLeft()
+    public void StartLeft()
     {
-        Vector2 bpos = background.transform.position;
-        bpos.x += speed * Time.deltaTime;
-        if (bpos.x > mapEdge)
-            bpos.x = mapEdge;
-        background.transform.position = bpos;
-
-        //updates the gameManager to current position
-        GameManager.S.backPos = bpos;
+		leftHeld = true;
     }
 
-    void GoRight()
+	public void StopLeft() {
+		leftHeld = false;
+	}
+
+    public void StartRight()
     {
-        Vector2 bpos = background.transform.position;
-        bpos.x -= speed * Time.deltaTime;
-        if (bpos.x < -mapEdge)
-        {
-            bpos.x = -mapEdge;
-        }
-            
-        background.transform.position = bpos;
-        GameManager.S.backPos = bpos;
+		rightHeld = true;
     }
 
+	public void StopRight()
+	{
+		rightHeld = false;
+	}
 }

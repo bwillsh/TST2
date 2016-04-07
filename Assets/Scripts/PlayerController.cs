@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
 
@@ -8,6 +9,7 @@ public class PlayerController : MonoBehaviour {
 	public Animator anim;
 	public bool facingRight = true;
 	public bool touching;
+	GameObject interactButton;
 
     public static PlayerController S;
     void Awake()
@@ -16,6 +18,7 @@ public class PlayerController : MonoBehaviour {
     }
 	// Use this for initialization
 	void Start () {
+		interactButton = GameObject.Find ("Interact");
 		anim = GetComponent<Animator>();
 		anim.SetBool ("Moving", startMoving);
 	}
@@ -30,6 +33,7 @@ public class PlayerController : MonoBehaviour {
     {
         if(coll.gameObject.tag == "Interact")
         {
+			interactButton.GetComponent<Image> ().color = Color.green;
             cur = coll.gameObject;
         }
     }
@@ -39,6 +43,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (coll.gameObject.tag == "Interact")
         {
+			interactButton.GetComponent<Image> ().color = Color.white;
             cur = null;
         }
     }
