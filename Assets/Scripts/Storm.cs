@@ -22,7 +22,7 @@ public class Storm : MonoBehaviour {
 	void Update () {
 		if(Input.GetKeyDown(KeyCode.A) || Input.GetMouseButtonDown(0))
         {
-            Application.LoadLevel("overWorld_Beta");
+            Application.LoadLevel("combat_Tutorial");
         }
 	}
 
