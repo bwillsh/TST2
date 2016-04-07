@@ -126,6 +126,7 @@ public class GameManager : MonoBehaviour {
         PlayerPrefs.SetString("Level", "Menu");
         PlayerPrefs.SetFloat("BackX", 0);
         PlayerPrefs.SetFloat("BackY", 2.75f);
+        currentItem = "";
         PlayerPrefs.SetString("Inv", "");
         levelsBeaten = new List<string>();
         numberOfLevelsBeaten = 0;
