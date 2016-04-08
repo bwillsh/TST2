@@ -14,6 +14,7 @@ public class Storm : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		myRenderer = GetComponentInParent<SpriteRenderer> ();
+		GameManager.S.level = 5;
 //		clear = Resources.Load<Sprite>("Outside");
 //		storm = Resources.Load<Sprite>("OutsideStorm");
 	}
@@ -22,7 +23,7 @@ public class Storm : MonoBehaviour {
 	void Update () {
 		if(Input.GetKeyDown(KeyCode.A) || Input.GetMouseButtonDown(0))
         {
-            Application.LoadLevel("overWorld_Beta");
+            Application.LoadLevel("combat_Tutorial");
         }
 	}
 

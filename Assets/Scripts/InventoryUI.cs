@@ -4,14 +4,14 @@ using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour {
 
-	public Sprite keySprite;
+	public Sprite pencilSprite;
 
 	// Use this for initialization
 	void Start () {
 		switch (GameManager.S.currentItem) {
-		case "Key":
-			print ("Display key sprite.");
-			GetComponent<Image> ().sprite = keySprite;
+		case "Pencil":
+			print ("Display pencil sprite.");
+			GetComponent<Image> ().sprite = pencilSprite;
 			GetComponent<Image> ().enabled = true;
 			break;
 		default:

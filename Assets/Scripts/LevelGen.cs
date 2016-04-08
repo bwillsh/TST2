@@ -28,11 +28,8 @@ public class LevelGen : MonoBehaviour {
     public List<GameObject> wallList;
 
 
-    public GameObject desk1;
-    public GameObject desk2;
-    public GameObject lightfix;
-    public GameObject chair;
-    List<GameObject> collList;
+    
+    public List<GameObject> collList;
     public static LevelGen S;
     void Awake()
     {
@@ -49,11 +46,7 @@ public class LevelGen : MonoBehaviour {
             combat = GameObject.Find("CombatController").GetComponent<CombatController>();
             FootPos = Foot.S.transform.position;
         }
-        collList = new List<GameObject>();    
-        collList.Add(desk1);
-        collList.Add(desk2);
-        collList.Add(lightfix);
-        collList.Add(chair);
+        
     }
 	
 	// Update is called once per frame
@@ -89,7 +82,7 @@ public class LevelGen : MonoBehaviour {
             x = Random.Range(-7f, -5);
             y = Random.Range(min.y, max.y);
             Ninja clone = (Ninja)Instantiate(ninja, new Vector3(x, y, -1), Quaternion.identity);
-
+            clone.jumpPoints = new List<Transform>();
             //initial jump point
             GameObject npoint = (GameObject)Instantiate(empty, clone.transform.position, Quaternion.identity);
             clone.jumpPoints.Add(npoint.transform);
@@ -171,7 +164,45 @@ public class LevelGen : MonoBehaviour {
             {
                 int num = Random.Range(0, collList.Count);
                 GameObject go = collList[num];
-                wallList.Add((GameObject)Instantiate(go, new Vector3(x, y, -1), Quaternion.Euler(0, 0, Random.Range(0, 180))));
+                float f = Random.Range(0, 360);
+                switch (num)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        f = 0f;
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+                    case 6:
+                        break;
+                    case 7:
+                        break;
+                    case 8:
+                        f = Random.Range(45, 135);
+                        break;
+                    case 9:
+                        break;
+                    case 10:
+                        break;
+                    case 11:
+                        f = Random.Range(-180, 0);
+                        break;
+                    case 12:
+                        break;
+                    case 13:
+                        break;
+                    case 14:
+                        break;
+                }
+                
+                wallList.Add((GameObject)Instantiate(go, new Vector3(x, y, -1), Quaternion.Euler(0, 0, f)));
                 tryCount = 0;
             }
             //if not good, stop adding walls. even if you are not at numWalls
