@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour {
         numberOfLevelsBeaten++;
         PlayerPrefs.SetString("Door" + numberOfLevelsBeaten, s);
     }
-
+		
     public void NukeSaveData()
     {
         PlayerPrefs.SetString("Level", "Menu");

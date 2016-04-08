@@ -8,6 +8,8 @@ public class CanvasController : MonoBehaviour {
 	public int num_answers;
 	public int count;
 	public Canvas well_done;
+	public string loaded_level;
+
 
 	// Use this for initialization
 	void Start () {
@@ -18,14 +20,17 @@ public class CanvasController : MonoBehaviour {
 
 	void Update(){
 		if (count == num_answers) {
-			StartCoroutine (wait ());
+			StartCoroutine (win ());
 		}
 	}
 
-	IEnumerator wait() {
+	IEnumerator win() {
 		well_done.gameObject.SetActive (true);
 		yield return new WaitForSeconds (3);
-		gameObject.SetActive (false);
+		if (!GameManager.S.levelsBeaten.Contains (Application.loadedLevelName)) {
+			GameManager.S.levelsBeaten.Add (Application.loadedLevelName);
+		}
+		Application.LoadLevel (loaded_level);
 	}
 
 	public void increment(){

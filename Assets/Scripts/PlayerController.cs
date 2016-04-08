@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour {
         if (cur == null)
             return;
         cur.SendMessage("Button");
+		Debug.Log ("pressed");
     }
 
 	public void Flip()
