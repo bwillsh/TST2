@@ -39,8 +39,6 @@ public class CombatController : MonoBehaviour {
 		}
 	}
 
-	public List<Ninja> ninjaList;
-
 	public int NinjaCount;
 
     public bool generatedLevel = false;
@@ -49,6 +47,9 @@ public class CombatController : MonoBehaviour {
 	public Vector3 ItemDropPosition;
 	private GameObject	ceiling;
 	public float	ceilingHeight;
+	private int		ninjasReady = 0;
+	private int		ninjasStunned = 0;
+	public List<Ninja>	ninjaList;
 
     void Awake () {
 		TommysTurn();
@@ -68,15 +69,15 @@ public class CombatController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//print (NinjaCount);
 		if (turn == TurnState.TOMMYEND)
 		{
 			EnemysTurn();
 		}
 		else if (turn == TurnState.ENEMY)
 		{
-			if (NinjasDoneMoving())
+			if (ninjasReady + ninjasStunned == NinjaCount)
 			{
+				ninjasReady = 0;
 				TommysTurn();
 			}
 		}
@@ -94,7 +95,7 @@ public class CombatController : MonoBehaviour {
 				else {
 					if (!GameManager.S.levelsBeaten.Contains (Application.loadedLevelName)) {
                         //GameManager.S.levelsBeaten.Add (Application.loadedLevelName);
-                        GameManager.S.BeatLevel(Application.loadedLevelName);
+						GameManager.S.BeatLevel(Application.loadedLevelName);
 					}
 					if (GameManager.S.IsHallBeaten () && ItemDrop != null) {
 						Instantiate (ItemDrop, ItemDropPosition, Quaternion.identity);
@@ -119,19 +120,17 @@ public class CombatController : MonoBehaviour {
 	{
 		turn = TurnState.ENEMYSTART;
 	}
-
-
-
-
-	bool NinjasDoneMoving()
+		
+	public void NinjaDoneMoving()
 	{
-		for (int i = 0; i < ninjaList.Count; i += 1)
-		{
-			if (ninjaList[i].jumpState != JumpState.GROUNDED)
-			{
-				return false;
-			}
-		}
-		return true;
+		++ninjasReady;
+	}
+	public void NinjaStunned()
+	{
+		++ninjasStunned;
+	}
+	public void NinjaUnStunned()
+	{
+		--ninjasStunned;
 	}
 }

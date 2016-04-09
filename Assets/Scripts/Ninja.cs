@@ -24,6 +24,7 @@ public class Ninja : NinjaParent {
 			switch(_jumpState)
 			{
 			case JumpState.GROUNDED:
+				CombatController.S.NinjaDoneMoving();
 				anim.SetInteger("State", 2);
 				break;
 			case JumpState.FORWARD:
@@ -31,6 +32,7 @@ public class Ninja : NinjaParent {
 				SetJumpPoints();
 				currentJumpPoint -= 1;
 				TurnOnTurnCounter(numberOfJumpPoints - currentJumpPoint);
+				StartCoroutine(PlayJumpSound(Random.Range(0, .5f)));
 				break;
 			case JumpState.KNOCKBACK:
 				currentJumpDuration = 0;
@@ -60,11 +62,17 @@ public class Ninja : NinjaParent {
 	public float			jumpDuration = 3;
 	private float			currentJumpDuration = 0;
 	private Vector3			startJump, endJump, midJump;
+	public Transform		emptyTransform;
+	private Transform		countHolder;
+	private AudioSource		deathSound;
+	private AudioSource		jumpSound;
 
 	// Use this for initialization
 
 	void Start () 
 	{
+		deathSound = GameObject.Find("NinjaDeathSound").GetComponent<AudioSource>();
+		jumpSound = GameObject.Find("NinjaNormalJump").GetComponent<AudioSource>();
 		//initialize variables
 		anim = GetComponent<Animator>();
 		foot = GameObject.Find ("Foot").GetComponent<Foot>();
@@ -77,6 +85,9 @@ public class Ninja : NinjaParent {
 			temp.z = transform.position.z;
 			jumpPoints[i].position = temp;
 		}
+		countHolder = Instantiate(emptyTransform, transform.position, transform.rotation) as Transform;
+		countHolder.parent = transform;
+
 		turnCounter = new List<TurnCounter>();
 		float spacing = 0;
 		if ((numberOfJumpPoints - 1) % 2 == 0) spacing = (spaceOfCounters / ((numberOfJumpPoints - 1) * 2)) * (numberOfJumpPoints - 2);
@@ -87,7 +98,7 @@ public class Ninja : NinjaParent {
 			Vector3 spot = new Vector3(transform.position.x + num - spacing, transform.position.y + 2f, transform.position.z);
 			GameObject go = Instantiate(turnCounterObject, spot, Quaternion.identity) as GameObject;
 			turnCounter.Add(go.GetComponent<TurnCounter>());
-			go.transform.parent = transform;
+			go.transform.parent = countHolder;
 			if (i == numberOfJumpPoints - 3) go.GetComponent<TurnCounter>().onColor = Color.yellow;
 			if (i == numberOfJumpPoints - 2) go.GetComponent<TurnCounter>().onColor = Color.red;
 		}
@@ -97,6 +108,7 @@ public class Ninja : NinjaParent {
 		}
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
 		combat.NinjaCount++;
+		Flip();
 	}
 	
 	// Update is called once per frame
@@ -154,6 +166,7 @@ public class Ninja : NinjaParent {
 		if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot")
 		{
 			Instantiate(explosion, transform.position, Quaternion.identity);
+			deathSound.PlayOneShot(deathSound.clip);
 			Destroy(this.gameObject);
 			--combat.NinjaCount;
 			if (combat.NinjaCount == 0)
@@ -224,8 +237,10 @@ public class Ninja : NinjaParent {
 			Vector3 temp = transform.localScale;
 			temp.x *= -1;
 			transform.localScale = temp;
+			Vector3 countScale = countHolder.localScale;
+			countScale.x *= -1;
+			countHolder.localScale = countScale;
 		}
-
 	}
 
 	Vector3 MoveAlongBezierCurve(float t)
@@ -252,5 +267,11 @@ public class Ninja : NinjaParent {
 		{
 			midJump.y = CombatController.S.ceilingHeight - height;
 		}
+	}
+	IEnumerator PlayJumpSound(float time)
+	{
+		yield return new WaitForSeconds(time);
+		jumpSound.pitch = Random.Range(1, 1.3f);
+		jumpSound.PlayOneShot(jumpSound.clip);
 	}
 }
