@@ -26,6 +26,7 @@ public class Ninja : NinjaParent {
 			case JumpState.GROUNDED:
 				CombatController.S.NinjaDoneMoving();
 				anim.SetInteger("State", 2);
+				canDealDamage = true;
 				break;
 			case JumpState.FORWARD:
 				anim.SetInteger("State", 1);
@@ -66,6 +67,7 @@ public class Ninja : NinjaParent {
 	private Transform		countHolder;
 	private AudioSource		deathSound;
 	private AudioSource		jumpSound;
+	[HideInInspector] public bool	canDealDamage = true;
 
 	// Use this for initialization
 
@@ -175,16 +177,8 @@ public class Ninja : NinjaParent {
 			}
 
 			Rigidbody2D footRB = coll.gameObject.GetComponent<Rigidbody2D>();
-
-			if (footRB.velocity.magnitude / foot.shotSpeedOriginal <= .3f || true)
-			{
-
-			} 
-			else
-			{
-				Instantiate(explosion, transform.position, Quaternion.identity);
-				Destroy(this.gameObject);
-			}
+			Instantiate(explosion, transform.position, Quaternion.identity);
+			Destroy(this.gameObject);
 		}
 		else if (coll.gameObject.tag == "Player")
 		{

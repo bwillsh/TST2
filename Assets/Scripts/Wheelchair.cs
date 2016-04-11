@@ -26,14 +26,34 @@ public class Wheelchair : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-
-		if (coll.gameObject.tag == "Ninja" || coll.gameObject.tag == "NinjaStar")
+		if (coll.gameObject.tag == "Ninja")
+		{
+			Ninja n = coll.gameObject.GetComponent<Ninja>();
+			if (n != null)
+			{
+				if (n.canDealDamage)
+				{
+					n.canDealDamage = false;
+					health.lowerHealth(.2f);
+				}
+				
+			}
+			else
+			{
+				tankNinja tn = coll.gameObject.GetComponent<tankNinja>();
+				if (tn.canDealDamage)
+				{
+					tn.canDealDamage = false;
+					health.lowerHealth(.3f);
+				}
+			}
+			injuredSound.pitch = 1f;
+			injuredSound.PlayOneShot(injuredSound.clip);
+		}
+		if (coll.gameObject.tag == "NinjaStar")
 		{
 			health.lowerHealth(.2f);
-			if (coll.gameObject.tag == "NinjaStar")
-				injuredSound.pitch = .5f;
-			else
-				injuredSound.pitch = 1f;
+			injuredSound.pitch = .5f;
 			injuredSound.PlayOneShot(injuredSound.clip);
 		}
 	}
