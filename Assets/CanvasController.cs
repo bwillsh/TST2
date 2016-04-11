@@ -33,8 +33,8 @@ public class CanvasController : MonoBehaviour {
 	IEnumerator win() {
 		well_done.gameObject.SetActive (true);
 		yield return new WaitForSeconds (3);
-		if (!GameManager.S.levelsBeaten.Contains (Application.loadedLevelName)) {
-			GameManager.S.levelsBeaten.Add (Application.loadedLevelName);
+		if (!GameManager.S.puzzlesBeaten.Contains (Application.loadedLevelName)) {
+			GameManager.S.BeatPuzzle(Application.loadedLevelName);
 		}
 		Application.LoadLevel (loaded_level);
 	}

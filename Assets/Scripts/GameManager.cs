@@ -13,8 +13,10 @@ public class GameManager : MonoBehaviour {
     public string realLevelName = "null";
 	public string currentItem;
 	public List<string> levelsBeaten;
+    public List<string> puzzlesBeaten;
     int numberOfLevelsBeaten = 0;
-	public string currentHall;
+    int numberOfPuzzlesBeaten = 0;
+    public string currentHall;
 
     public static GameManager S;
     void Awake()
@@ -34,7 +36,7 @@ public class GameManager : MonoBehaviour {
         currentItem = PlayerPrefs.GetString("Inv");
 
         levelsBeaten = new List<string>();
-        for(int i = 1; i <= 8; i++)
+        for (int i = 1; i <= 6; i++)
         {
             string s = PlayerPrefs.GetString("Door" + i);
             if (s != null && s != "" && s != "null")
@@ -48,7 +50,22 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        if(PlayerPrefs.GetString("Level") == null)
+        puzzlesBeaten = new List<string>();
+        for (int i = 1; i <= 6; i++)
+        {
+            string s = PlayerPrefs.GetString("Puzzle" + i);
+            if (s != null && s != "" && s != "null")
+            {
+                numberOfPuzzlesBeaten = i;
+                puzzlesBeaten.Add(s);
+            }
+            else
+            {
+                i = 100;
+            }
+        }
+
+        if (PlayerPrefs.GetString("Level") == null)
         {
             print("Uh Oh");
             backPos.x = 0;
@@ -119,6 +136,13 @@ public class GameManager : MonoBehaviour {
         levelsBeaten.Add(s);
         numberOfLevelsBeaten++;
         PlayerPrefs.SetString("Door" + numberOfLevelsBeaten, s);
+    }
+
+    public void BeatPuzzle(string s)
+    {
+        puzzlesBeaten.Add(s);
+        numberOfPuzzlesBeaten++;
+        PlayerPrefs.SetString("Puzzle" + numberOfPuzzlesBeaten, s);
     }
 		
     public void NukeSaveData()
