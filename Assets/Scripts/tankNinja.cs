@@ -15,15 +15,18 @@ public class tankNinja : NinjaParent {
 			switch(_jumpState)
 			{
 			case JumpState.GROUNDED:
+				CombatController.S.NinjaDoneMoving();
 				CantMove();
 				break;
 			case JumpState.STUNNED:
+				CombatController.S.NinjaStunned();
 				anim.SetInteger("State", 3);
 				break;
 			case JumpState.FORWARD:
 				anim.SetInteger("State", 1);
 				SetJumpPoints();
 				currentJumpPoint -= 1;
+				StartCoroutine(PlayJumpSound(Random.Range(0, .5f)));
 				break;
 			case JumpState.KNOCKBACK:
 				currentJumpDuration = 0;
@@ -50,13 +53,20 @@ public class tankNinja : NinjaParent {
 	private Animator 		anim;
 	bool 					canMove = false; //needed for animation
 	public float			jumpDuration = 3;
+	public int				stunnedTurnsMax = 3;
 	private float			currentJumpDuration = 0;
 	private Vector3			startJump, endJump, midJump;
+	public Transform		emptyTransform;
+	private Transform		countHolder;
+	private AudioSource 	deathSound, jumpSound, punch;
 
 	// Use this for initialization
 
 	void Start () 
 	{
+		jumpSound = GameObject.Find("NinjaTankJump").GetComponent<AudioSource>();
+		deathSound = GameObject.Find("NinjaDeathSound").GetComponent<AudioSource>();
+		punch = GameObject.Find("Punch").GetComponent<AudioSource>();
 		anim = GetComponent<Animator>();
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
 		++combat.NinjaCount;
@@ -71,6 +81,10 @@ public class tankNinja : NinjaParent {
 			temp.z = transform.position.z;
 			jumpPoints[i].position = temp;
 		}
+
+		countHolder = Instantiate(emptyTransform, transform.position, transform.rotation) as Transform;
+		countHolder.parent = transform;
+
 		turnCounter = new List<TurnCounter>();
 		float spacing = 0;
 		if ((numberOfJumpPoints - 1) % 2 == 0) spacing = (spaceOfCounters / ((numberOfJumpPoints - 1) * 2)) * (numberOfJumpPoints - 2);
@@ -81,10 +95,12 @@ public class tankNinja : NinjaParent {
 			Vector3 spot = new Vector3(transform.position.x + num - spacing, transform.position.y + 2f, transform.position.z);
 			GameObject go = Instantiate(turnCounterObject, spot, Quaternion.identity) as GameObject;
 			turnCounter.Add(go.GetComponent<TurnCounter>());
-			go.transform.parent = transform;
+			go.transform.parent = countHolder;
 			if (i == numberOfJumpPoints - 3) go.GetComponent<TurnCounter>().onColor = Color.yellow;
 			if (i == numberOfJumpPoints - 2) go.GetComponent<TurnCounter>().onColor = Color.red;
 		}
+
+		Flip();
 	}
 
 	// Update is called once per frame
@@ -96,15 +112,18 @@ public class tankNinja : NinjaParent {
 			if (jumpState != JumpState.STUNNED) {
 				jumpState = JumpState.FORWARD;
 			}
+			//if (!canMove) CanMove();
 		}
 		if (jumpState == JumpState.FORWARD && canMove) {
 			JumpForward ();
-		} else if (jumpState == JumpState.KNOCKBACK) {
+		}
+		else if (jumpState == JumpState.KNOCKBACK) {
 			Knockback ();
 		}
 		if (jumpState == JumpState.STUNNED) {
 			Stunned ();
 		}
+
 			
 	}
 
@@ -147,10 +166,11 @@ public class tankNinja : NinjaParent {
 		//stay stunned for 3 turns
 		if (combat.turn == TurnState.ENEMYSTART) {
 			++stunned_turns;
-			//Debug.Log (stunned_turns);
 		}
-		if(stunned_turns == 3) {
-			jumpState = JumpState.FORWARD;
+		if(stunned_turns == stunnedTurnsMax + 1) {
+			anim.SetInteger("State", 0);
+			jumpState = JumpState.GROUNDED;
+			CombatController.S.NinjaUnStunned();
 			stunned_turns = 0;
 		}
 	}
@@ -159,17 +179,18 @@ public class tankNinja : NinjaParent {
 	void OnTriggerEnter2D (Collider2D coll)
 	{
 		if (jumpState == JumpState.STUNNED && coll.gameObject.tag == "Foot" && stunned_turns > 0) {
+			deathSound.PlayOneShot(deathSound.clip);
 			Instantiate (explosion, transform.position, Quaternion.identity);
 			Destroy (this.gameObject);
 			--combat.NinjaCount;
+			CombatController.S.NinjaUnStunned();
 			if (combat.NinjaCount == 0) {
 				combat.ItemDropPosition = transform.position;
 			}
-			Instantiate (explosion, transform.position, Quaternion.identity);
-			Destroy (this.gameObject);
 
 		} else if (jumpState == JumpState.GROUNDED && coll.gameObject.tag == "Foot") { 
 			jumpState = JumpState.STUNNED;
+			punch.PlayOneShot(punch.clip);
 		}
 		else if (coll.gameObject.tag == "Player")
 		{
@@ -225,6 +246,9 @@ public class tankNinja : NinjaParent {
 			Vector3 temp = transform.localScale;
 			temp.x *= -1;
 			transform.localScale = temp;
+			Vector3 countScale = countHolder.localScale;
+			countScale.x *= -1;
+			countHolder.localScale = countScale;
 		}
 	}
 
@@ -252,6 +276,13 @@ public class tankNinja : NinjaParent {
 		{
 			midJump.y = CombatController.S.ceilingHeight - height;
 		}
+	}
+
+	IEnumerator PlayJumpSound(float time)
+	{
+		yield return new WaitForSeconds(time);
+		jumpSound.pitch = Random.Range(.5f, .8f);
+		jumpSound.PlayOneShot(jumpSound.clip);
 	}
 }
 	

@@ -5,31 +5,29 @@ using System.Collections.Generic;
 public class LevelGen : MonoBehaviour {
 
     CombatController combat;
-
+    
+    //Variables that control what spawns
     public bool progressing = true;
-
     public int numWalls = 1;
     public int futureWalls = 1;
     public int numNinjas = 1;
     public int futureNinjas = 1;
     public int numJumps = 4;
 
+    //GameObjects for prefabs
     public GameObject wall;
-  
-
-
     public Ninja ninja;
     public GameObject empty;
 
+    //Level size
     public Vector2 max = new Vector2(18.05f,13.4f);
     public Vector2 min = new Vector2(-8f, -3.1f);
     Vector2 FootPos;
 
     public List<GameObject> wallList;
-
-
-    
     public List<GameObject> collList;
+
+
     public static LevelGen S;
     void Awake()
     {
@@ -82,14 +80,18 @@ public class LevelGen : MonoBehaviour {
             x = Random.Range(-7f, -5);
             y = Random.Range(min.y, max.y);
             Ninja clone = (Ninja)Instantiate(ninja, new Vector3(x, y, -1), Quaternion.identity);
+
+
+            //initial jump point is equal to ninja position
             clone.jumpPoints = new List<Transform>();
-            //initial jump point
             GameObject npoint = (GameObject)Instantiate(empty, clone.transform.position, Quaternion.identity);
             clone.jumpPoints.Add(npoint.transform);
 
             //set up jump points at equal intervals
             float jx = x;
             float inc = (Foot.S.transform.position.x - x) / numJumps;
+
+            //spawn number of jump points
             for (int j = 1; j < numJumps; j++)
             {
                 print("Jump point " + j);
@@ -99,20 +101,24 @@ public class LevelGen : MonoBehaviour {
                 clone.jumpPoints.Add(tpoint.transform);
             }
 
-            //last jump point
+            //last jump point = to tommy
             GameObject ttpoint = (GameObject)Instantiate(empty, Foot.S.transform.position, Quaternion.identity);
             clone.jumpPoints.Add(ttpoint.transform);
 
-            //points get added in reverse order, so need to swap aroung
+            //points get added in reverse order, so need to swap around
             clone.jumpPoints.Reverse();
             combat.ninjaList.Add(clone);
 
         }
         int tryCount = 0;
+
+        //spawn walls
         for (int i = 0; i < numWalls; i++)
         {
+            //set a random point for the wall
             x = Random.Range(min.x, max.x);
             y = Random.Range(min.y, max.y);
+
             //test to see if point is ok
             bool good = false;
             while(!good)
@@ -167,44 +173,22 @@ public class LevelGen : MonoBehaviour {
                 float f = Random.Range(0, 360);
                 switch (num)
                 {
-                    case 0:
-                        break;
-                    case 1:
+                    
+                    case 1: //Swing seat
                         f = 0f;
                         break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-                        break;
-                    case 5:
-                        break;
-                    case 6:
-                        break;
-                    case 7:
-                        break;
-                    case 8:
+                    case 8: //Light Fixture
                         f = Random.Range(45, 135);
                         break;
-                    case 9:
-                        break;
-                    case 10:
-                        break;
-                    case 11:
+                    case 11: //Stool
                         f = Random.Range(-180, 0);
-                        break;
-                    case 12:
-                        break;
-                    case 13:
-                        break;
-                    case 14:
                         break;
                 }
                 
                 wallList.Add((GameObject)Instantiate(go, new Vector3(x, y, -1), Quaternion.Euler(0, 0, f)));
                 tryCount = 0;
             }
+
             //if not good, stop adding walls. even if you are not at numWalls
             //also drops number of walls for next time and adds a ninjasdf
             else

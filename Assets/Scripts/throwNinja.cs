@@ -55,10 +55,12 @@ public class throwNinja : NinjaParent {
 	public Sprite ninjaStar;
 	private Animator anim;
 	private int animationState = 0;
+	private AudioSource audio;
 
 	// Use this for initialization
 	void Start () {
 
+		audio = GameObject.Find("NinjaDeathSound").GetComponent<AudioSource>();
 		anim = GetComponent<Animator>();
 		throwing = ThrowState.STAGE0;
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
@@ -80,6 +82,7 @@ public class throwNinja : NinjaParent {
 			if (i == max_turns - 2) go.GetComponent<TurnCounter>().onColor = Color.yellow;
 			if (i == max_turns - 1) go.GetComponent<TurnCounter>().onColor = Color.red;
 		}
+
 	}
 	
 	// Update is called once per frame
@@ -93,6 +96,8 @@ public class throwNinja : NinjaParent {
 		} 
 		else if(combat.turn == TurnState.ENEMYSTART) {
 			current_turn++;
+			if (current_turn < max_turns)
+				CombatController.S.NinjaDoneMoving();
 			NextState();
 		} 
 		TurnOnTurnCounter (current_turn + 1);
@@ -127,6 +132,7 @@ public class throwNinja : NinjaParent {
 	{
 		if (coll.gameObject.tag == "Foot") {
 			Instantiate (explosion, transform.position, Quaternion.identity);
+			audio.PlayOneShot(audio.clip);
 			Destroy (this.gameObject);
 			--combat.NinjaCount;
 			if (combat.NinjaCount == 0) {
@@ -139,16 +145,13 @@ public class throwNinja : NinjaParent {
 	void NextAnimationState()
 	{
 		if (max_turns == 3 && animationState == 1) {
-			print ("1");
 			animationState += 2; //skip one animation
 		}
 		else if (max_turns > 4 && current_turn > 3 && current_turn != max_turns) 
-			print ("2");
+			print ("Do Nothing");
 		else {
-			print ("3");
 			animationState++;
 		}
-		print ("AnimState: " + animationState);
 		anim.SetInteger("State", animationState);
 	}
 

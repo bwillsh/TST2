@@ -76,12 +76,8 @@ public class Foot : MonoBehaviour {
 			case AttackState.SHOOTING:
 				originalShotPos = footPos;
 				GetShotPathVertices();
-				//rb.velocity = transform.right * shotSpeedCurrent;
 				break;
 			case AttackState.SLOWING:
-
-				deceleration = CalculateDeceleration();
-
 				break;
 			case AttackState.RETURNING:
 				distanceTraveled = 0;
@@ -120,7 +116,6 @@ public class Foot : MonoBehaviour {
 	private Vector2		originalShotPos; //where the foot was positioned at the beginning of the shot
 	private Vector3		attackAngle;
 	private float		attackStrength; //the charge converted to a decimal [0, 1]
-	private float		deceleration; //by how much the foot decelerates at the tip of the attack
 	private List<Vector3> ricochetPoints; //the positions where the foot ricochets
 	private int			currentRicPoint;
 	private Vector3		returnTarget;
@@ -142,6 +137,7 @@ public class Foot : MonoBehaviour {
 	private Transform	tommy;
 	private HealthBar	health;
 	private SpriteRenderer sprend;
+	private AudioSource boing;
 
 	//POWERUPS
 	public string curPower = "";
@@ -153,6 +149,7 @@ public class Foot : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		boing = GameObject.Find("Boing").GetComponent<AudioSource>();
 		//initialize states and variables
 		inputState = InputState.NOINPUT;
 		attackState = AttackState.NORMAL;
@@ -314,6 +311,11 @@ public class Foot : MonoBehaviour {
 		if (currentRicPoint > ricochetPoints.Count - 1) currentRicPoint = ricochetPoints.Count - 1;
 		if (transform.position == ricochetPoints[currentRicPoint])
 		{
+			if (currentRicPoint != 0) 
+			{
+				boing.pitch = Random.Range(.6f, 1.4f);
+				boing.PlayOneShot(boing.clip);
+			}
 			currentRicPoint++;
 			if (currentRicPoint < ricochetPoints.Count)
 			{
@@ -342,6 +344,11 @@ public class Foot : MonoBehaviour {
 		}
 		if (transform.position == ricochetPoints[currentRicPoint])
 		{
+			if (currentRicPoint != 0) 
+			{
+				boing.pitch = Random.Range(.6f, 1.4f);
+				boing.PlayOneShot(boing.clip);
+			}
 			currentRicPoint++;
 			returnTarget = ricochetPoints[currentRicPoint];
 			Vector3 dir = transform.position - returnTarget;
@@ -350,15 +357,6 @@ public class Foot : MonoBehaviour {
 		}
 		transform.position = Vector3.MoveTowards(transform.position, ricochetPoints[currentRicPoint], currentShootSpeed * Time.deltaTime);
 	}
-
-	//Remember those physics equations, like x = x0 + v * 2*a that shit? This is that shit.
-	//based on how far there is left to travel and current velocity, this calculates the rate that the velocity should decelerate to 
-	//get the rest of the distance and end at a velocity of 0
-	float CalculateDeceleration()
-	{
-		return (((shotSpeedOriginal * shotSpeedOriginal) / (2 * (maxShotDistance - Vector2.Distance(footPos, originalShotPos)) * attackStrength)) * .04f);
-	}
-
 
 	void ReturnFoot()
 	{
@@ -373,6 +371,8 @@ public class Foot : MonoBehaviour {
 					Vector3 dir = transform.position - returnTarget;
 					float angle = Mathf.Atan2(dir.y,dir.x) * Mathf.Rad2Deg;
 					transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+					boing.pitch = Random.Range(.6f, 1.4f);
+					boing.PlayOneShot(boing.clip);
 				}
 				else 
 				{
@@ -426,17 +426,6 @@ public class Foot : MonoBehaviour {
 	{
 		if (coll.gameObject.layer == 8 && (attackState == AttackState.SHOOTING || attackState == AttackState.SLOWING))
 		{
-//			ricochetPoints.Add(transform.position);
-//			Ray2D ray = new Ray2D(footPos, transform.right);
-//			Vector2 right = new Vector2(transform.right.x, transform.right.y);
-//
-//			RaycastHit2D hit = Physics2D.Raycast(footPos, right, 100 /*Time.deltaTime * shotSpeedCurrent*/, collisionMask);
-//			if (hit.collider != null) {
-//				Vector2 ricochetDir = Vector2.Reflect(ray.direction, hit.normal);
-//				float rot = Mathf.Atan2(ricochetDir.y, ricochetDir.x) * Mathf.Rad2Deg;
-//				transform.eulerAngles = new Vector3(0, 0, rot);
-//				rb.velocity = transform.right * shotSpeedCurrent;
-//			}
 			if (coll.gameObject.tag == "DamageWall")
 			{
 				health.lowerHealth(0.1f);

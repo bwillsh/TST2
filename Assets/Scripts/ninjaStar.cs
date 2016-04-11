@@ -29,6 +29,7 @@ public class ninjaStar : MonoBehaviour {
 	{
 		if (coll.gameObject.tag == "Player")
 		{
+			CombatController.S.NinjaDoneMoving();
 			Instantiate(explosion, transform.position, Quaternion.identity);
 			Destroy(this.gameObject);
 		}
