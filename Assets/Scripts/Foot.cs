@@ -74,6 +74,7 @@ public class Foot : MonoBehaviour {
 				originalTouchPoint = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, -10.0f));
 				break;
 			case AttackState.SHOOTING:
+				pop.PlayOneShot(pop.clip);
 				originalShotPos = footPos;
 				GetShotPathVertices();
 				break;
@@ -126,7 +127,7 @@ public class Foot : MonoBehaviour {
 	//AIMING
 	public GameObject	line; //the line direction indicator prefab
 	private ShotPath	shotPath; //the line direction object
-	
+	private float		prevAngle = 0;
 
 	//GENERAL
 	private Rigidbody2D	rb; //the foot's rigidbody2D component
@@ -135,7 +136,7 @@ public class Foot : MonoBehaviour {
 	private CombatController	combat;	//the script that keeps track of combat
 	public LayerMask	collisionMask;
 	private HealthBar	health;
-	private AudioSource boing;
+	private AudioSource boing, crank, pop;
 
 	//POWERUPS
 	public string curPower = "";
@@ -148,6 +149,8 @@ public class Foot : MonoBehaviour {
 	void Start () 
 	{
 		boing = GameObject.Find("Boing").GetComponent<AudioSource>();
+		crank = GameObject.Find("Crank").GetComponent<AudioSource>();
+		pop = GameObject.Find("Pop").GetComponent<AudioSource>();
 		//initialize states and variables
 		inputState = InputState.NOINPUT;
 		attackState = AttackState.NORMAL;
@@ -279,7 +282,12 @@ public class Foot : MonoBehaviour {
 		diff.Normalize();
 		
 		float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 180;
-
+		if (Mathf.Abs(rot_z - prevAngle) > 30)
+		{
+			prevAngle = rot_z;
+			crank.pitch = Random.Range(.7f, .9f);
+			crank.PlayOneShot(crank.clip);
+		}
 		transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
 
 	}
