@@ -134,9 +134,7 @@ public class Foot : MonoBehaviour {
 	private Vector2 	footPos; //where the foot is each fram
 	private CombatController	combat;	//the script that keeps track of combat
 	public LayerMask	collisionMask;
-	private Transform	tommy;
 	private HealthBar	health;
-	private SpriteRenderer sprend;
 	private AudioSource boing;
 
 	//POWERUPS
@@ -157,10 +155,8 @@ public class Foot : MonoBehaviour {
 		shotSpeedCurrent = shotSpeedOriginal;
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
 		shotPath = line.GetComponent<ShotPath>();
-		tommy = transform.parent;
 		ricochetPoints = new List<Vector3>(); 
 		health = GameObject.Find ("Bar").GetComponent<HealthBar>();
-		sprend = GetComponent<SpriteRenderer>();
 	}
 
 	void GetInput ()

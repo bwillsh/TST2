@@ -17,6 +17,7 @@ public class tankNinja : NinjaParent {
 			case JumpState.GROUNDED:
 				CombatController.S.NinjaDoneMoving();
 				CantMove();
+				canDealDamage = true;
 				break;
 			case JumpState.STUNNED:
 				CombatController.S.NinjaStunned();
@@ -59,6 +60,7 @@ public class tankNinja : NinjaParent {
 	public Transform		emptyTransform;
 	private Transform		countHolder;
 	private AudioSource 	deathSound, jumpSound, punch;
+	[HideInInspector] public bool canDealDamage = true;
 
 	// Use this for initialization
 
