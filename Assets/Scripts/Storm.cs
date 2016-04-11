@@ -28,7 +28,6 @@ public class Storm : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D coll) {
-		print ("Enter");
 		PlayerController.S.Move (false);
 		myRenderer.sprite = storm;
 		StartCoroutine(Lightning());
@@ -37,13 +36,11 @@ public class Storm : MonoBehaviour {
 	IEnumerator Lightning() {
 		yield return new WaitForSeconds(1);
 		myRenderer.sprite = lightning;
-		print ("Zap1");
 		Instantiate (lightningparticle, transform.position, transform.rotation);
 		yield return new WaitForSeconds(1);
 		myRenderer.sprite = storm;
 		yield return new WaitForSeconds(1);
 		myRenderer.sprite = lightning;
-		print ("Zap2");
 		Instantiate (lightningparticle, transform.position, transform.rotation);
 		yield return new WaitForSeconds(1);
 		myRenderer.sprite = storm;
