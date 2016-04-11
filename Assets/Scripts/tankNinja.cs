@@ -183,6 +183,7 @@ public class tankNinja : NinjaParent {
 			Instantiate (explosion, transform.position, Quaternion.identity);
 			Destroy (this.gameObject);
 			--combat.NinjaCount;
+			CombatController.S.NinjaUnStunned();
 			if (combat.NinjaCount == 0) {
 				combat.ItemDropPosition = transform.position;
 			}

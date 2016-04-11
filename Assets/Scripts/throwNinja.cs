@@ -96,6 +96,8 @@ public class throwNinja : NinjaParent {
 		} 
 		else if(combat.turn == TurnState.ENEMYSTART) {
 			current_turn++;
+			if (current_turn < max_turns)
+				CombatController.S.NinjaDoneMoving();
 			NextState();
 		} 
 		TurnOnTurnCounter (current_turn + 1);
@@ -174,7 +176,6 @@ public class throwNinja : NinjaParent {
 				throwing = ThrowState.THROWING;
 			break;
 		}
-		CombatController.S.NinjaDoneMoving();
 	}
 
 	void ReturnToState0()
@@ -182,7 +183,6 @@ public class throwNinja : NinjaParent {
 		throwing = ThrowState.STAGE0;
 		animationState = 0;
 		anim.SetInteger("State", animationState);
-		CombatController.S.NinjaDoneMoving();
 	}
 }
 

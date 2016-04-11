@@ -317,7 +317,6 @@ public class Foot : MonoBehaviour {
 				boing.PlayOneShot(boing.clip);
 			}
 			currentRicPoint++;
-			print (currentRicPoint);
 			if (currentRicPoint < ricochetPoints.Count)
 			{
 				returnTarget = ricochetPoints[currentRicPoint];
