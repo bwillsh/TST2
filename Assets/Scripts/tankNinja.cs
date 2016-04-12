@@ -192,7 +192,10 @@ public class tankNinja : NinjaParent {
 		if (jumpState == JumpState.STUNNED && coll.gameObject.tag == "Foot" && stunned_turns > 0) {
 			deathSound.PlayOneShot(deathSound.clip);
 			Instantiate (explosion, transform.position, Quaternion.identity);
-			Destroy (this.gameObject);
+			if (transform.GetChild(0) != null && transform.GetChild(0).tag == "Ninja") {
+				--combat.NinjaCount;
+			}
+			Destroy(this.gameObject);
 			--combat.NinjaCount;
 			CombatController.S.NinjaUnStunned();
 			if (combat.NinjaCount == 0) {

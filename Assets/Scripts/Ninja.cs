@@ -175,8 +175,12 @@ public class Ninja : NinjaParent {
 		{
 			Instantiate(explosion, transform.position, Quaternion.identity);
 			deathSound.PlayOneShot(deathSound.clip);
+			if (transform.GetChild(0) != null && transform.GetChild(0).tag == "Ninja") {
+				--combat.NinjaCount;
+			}
 			Destroy(this.gameObject);
 			--combat.NinjaCount;
+
 			if (combat.NinjaCount == 0)
 			{
 				combat.ItemDropPosition = transform.position;
