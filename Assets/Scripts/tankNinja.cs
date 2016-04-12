@@ -67,8 +67,17 @@ public class tankNinja : NinjaParent {
 	void Start () 
 	{
 		jumpSound = GameObject.Find("NinjaTankJump").GetComponent<AudioSource>();
+		if (GameManager.S.isMuted) {
+			jumpSound.mute = true;
+		}
 		deathSound = GameObject.Find("NinjaDeathSound").GetComponent<AudioSource>();
+		if (GameManager.S.isMuted) {
+			deathSound.mute = true;
+		}
 		punch = GameObject.Find("Punch").GetComponent<AudioSource>();
+		if (GameManager.S.isMuted) {
+			punch.mute = true;
+		}
 		anim = GetComponent<Animator>();
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();
 		++combat.NinjaCount;

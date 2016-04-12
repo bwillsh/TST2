@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour {
     int numberOfLevelsBeaten = 0;
     int numberOfPuzzlesBeaten = 0;
     public string currentHall;
+	public bool isMuted = false;
 
     public static GameManager S;
     void Awake()

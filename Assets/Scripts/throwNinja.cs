@@ -61,6 +61,9 @@ public class throwNinja : NinjaParent {
 	void Start () {
 
 		audio = GameObject.Find("NinjaDeathSound").GetComponent<AudioSource>();
+		if (GameManager.S.isMuted) {
+			audio.mute = true;
+		}
 		anim = GetComponent<Animator>();
 		throwing = ThrowState.STAGE0;
 		combat = GameObject.Find("CombatController").GetComponent<CombatController>();

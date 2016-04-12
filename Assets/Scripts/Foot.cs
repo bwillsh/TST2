@@ -149,8 +149,17 @@ public class Foot : MonoBehaviour {
 	void Start () 
 	{
 		boing = GameObject.Find("Boing").GetComponent<AudioSource>();
+		if (GameManager.S.isMuted) {
+			boing.mute = true;
+		}
 		crank = GameObject.Find("Crank").GetComponent<AudioSource>();
+		if (GameManager.S.isMuted) {
+			crank.mute = true;
+		}
 		pop = GameObject.Find("Pop").GetComponent<AudioSource>();
+		if (GameManager.S.isMuted) {
+			pop.mute = true;
+		}
 		//initialize states and variables
 		inputState = InputState.NOINPUT;
 		attackState = AttackState.NORMAL;

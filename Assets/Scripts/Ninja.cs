@@ -74,7 +74,13 @@ public class Ninja : NinjaParent {
 	void Start () 
 	{
 		deathSound = GameObject.Find("NinjaDeathSound").GetComponent<AudioSource>();
+		if (GameManager.S.isMuted) {
+			deathSound.mute = true;
+		}
 		jumpSound = GameObject.Find("NinjaNormalJump").GetComponent<AudioSource>();
+		if (GameManager.S.isMuted) {
+			jumpSound.mute = true;
+		}
 		//initialize variables
 		anim = GetComponent<Animator>();
 		foot = GameObject.Find ("Foot").GetComponent<Foot>();

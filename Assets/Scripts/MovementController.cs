@@ -24,11 +24,17 @@ public class MovementController : MonoBehaviour {
 
     public GameObject background;
 
+	private AudioSource	music;
+
     //speed must be changed in the unity editor, at least for right now.
     public float speed = 5;
 
 	void Awake () {
 		S = this;
+		music = GameObject.Find("Music").GetComponent<AudioSource>();
+		if (!GameManager.S.isMuted) {
+			music.Play();
+		}
 	}
 
     // Use this for initialization

@@ -50,11 +50,16 @@ public class CombatController : MonoBehaviour {
 	private int		ninjasReady = 0;
 	private int		ninjasStunned = 0;
 	public List<Ninja>	ninjaList;
+	private AudioSource	music;
 
     void Awake () {
 		TommysTurn();
 		S = this;
 		Input.multiTouchEnabled = false;
+		music = GameObject.Find("Music").GetComponent<AudioSource>();
+		if (!GameManager.S.isMuted) {
+			music.Play();
+		}
 	}
 	// Use this for initialization
 	void Start () {
