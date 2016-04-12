@@ -20,11 +20,10 @@ public class MovementController : MonoBehaviour {
     Vector2 rightPos = new Vector2(4.06f, -3);
 
     float mapEdgeRight = -44.5f;
-    float mapEdgeLeft = 5.75f;
+	float mapEdgeLeft = 5.75f;
+	public GameObject background;
 
-    public GameObject background;
-
-	private AudioSource	music;
+	private AudioSource music;
 
     //speed must be changed in the unity editor, at least for right now.
     public float speed = 5;

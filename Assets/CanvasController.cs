@@ -10,7 +10,7 @@ public class CanvasController : MonoBehaviour {
 	public Canvas well_done;
 	public Canvas out_of_time;
 	public string loaded_level;
-
+	private 
 
 	// Use this for initialization
 	void Start () {
@@ -33,8 +33,8 @@ public class CanvasController : MonoBehaviour {
 	IEnumerator win() {
 		well_done.gameObject.SetActive (true);
 		yield return new WaitForSeconds (3);
-		if (!GameManager.S.puzzlesBeaten.Contains (Application.loadedLevelName)) {
-			GameManager.S.BeatPuzzle(Application.loadedLevelName);
+		if (!GameManager.S.levelsBeaten.Contains (Application.loadedLevelName)) {
+			GameManager.S.levelsBeaten.Add (Application.loadedLevelName);
 		}
 		Application.LoadLevel (loaded_level);
 	}

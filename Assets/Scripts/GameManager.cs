@@ -15,11 +15,14 @@ public class GameManager : MonoBehaviour {
 	public List<string> levelsBeaten;
     public List<string> puzzlesBeaten;
     int numberOfLevelsBeaten = 0;
+
+	public string currentHall;
+
     int numberOfPuzzlesBeaten = 0;
-    public string currentHall;
 	public bool isMuted = false;
 
-    public static GameManager S;
+
+	public static GameManager S;
     void Awake()
     {
         S = this;
@@ -35,7 +38,7 @@ public class GameManager : MonoBehaviour {
         backPos.x = PlayerPrefs.GetFloat("BackX");
         backPos.y = PlayerPrefs.GetFloat("BackY");
         currentItem = PlayerPrefs.GetString("Inv");
-		isMuted = (PlayerPrefs.GetInt ("Mute") == 1);
+		//isMuted = (PlayerPrefs.GetInt ("Mute") == 1);
 
         levelsBeaten = new List<string>();
         for (int i = 1; i <= 6; i++)

@@ -17,9 +17,6 @@ public class Wheelchair : MonoBehaviour {
 	void Start () {
 		health = GameObject.Find ("Bar").GetComponent<HealthBar>();
 		injuredSound = GameObject.Find("Punch").GetComponent<AudioSource>();
-		if (GameManager.S.isMuted) {
-			injuredSound.mute = true;
-		}
 	}
 	
 	// Update is called once per frame
