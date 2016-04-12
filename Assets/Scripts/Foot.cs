@@ -143,14 +143,13 @@ public class Foot : MonoBehaviour {
 	public int curPowerLength = -1;
 	public bool newPower = false;
 	public bool hasItem = false;
-
-
 	// Use this for initialization
 	void Start () 
 	{
 		boing = GameObject.Find("Boing").GetComponent<AudioSource>();
 		crank = GameObject.Find("Crank").GetComponent<AudioSource>();
 		pop = GameObject.Find("Pop").GetComponent<AudioSource>();
+
 		//initialize states and variables
 		inputState = InputState.NOINPUT;
 		attackState = AttackState.NORMAL;

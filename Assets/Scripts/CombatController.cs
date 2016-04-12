@@ -55,10 +55,11 @@ public class CombatController : MonoBehaviour {
 		TommysTurn();
 		S = this;
 		Input.multiTouchEnabled = false;
+
 		if (GameManager.S != null)
 		{
 			Transform sounds = GameObject.Find("CombatSounds").GetComponent<Transform>();
-			if (GameManager.S.muted)
+			if (GameManager.S.isMuted)
 			{
 				foreach (Transform child in sounds)
 				{

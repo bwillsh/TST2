@@ -10,7 +10,7 @@ public class CanvasController : MonoBehaviour {
 	public Canvas well_done;
 	public Canvas out_of_time;
 	public string loaded_level;
-
+	private 
 
 	// Use this for initialization
 	void Start () {

@@ -13,11 +13,16 @@ public class GameManager : MonoBehaviour {
     public string realLevelName = "null";
 	public string currentItem;
 	public List<string> levelsBeaten;
+    public List<string> puzzlesBeaten;
     int numberOfLevelsBeaten = 0;
-	public string currentHall;
-	public bool muted = false;
 
-    public static GameManager S;
+	public string currentHall;
+
+    int numberOfPuzzlesBeaten = 0;
+	public bool isMuted = false;
+
+
+	public static GameManager S;
     void Awake()
     {
         S = this;
@@ -33,9 +38,10 @@ public class GameManager : MonoBehaviour {
         backPos.x = PlayerPrefs.GetFloat("BackX");
         backPos.y = PlayerPrefs.GetFloat("BackY");
         currentItem = PlayerPrefs.GetString("Inv");
+		//isMuted = (PlayerPrefs.GetInt ("Mute") == 1);
 
         levelsBeaten = new List<string>();
-        for(int i = 1; i <= 8; i++)
+        for (int i = 1; i <= 6; i++)
         {
             string s = PlayerPrefs.GetString("Door" + i);
             if (s != null && s != "" && s != "null")
@@ -49,7 +55,22 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        if(PlayerPrefs.GetString("Level") == null)
+        puzzlesBeaten = new List<string>();
+        for (int i = 1; i <= 6; i++)
+        {
+            string s = PlayerPrefs.GetString("Puzzle" + i);
+            if (s != null && s != "" && s != "null")
+            {
+                numberOfPuzzlesBeaten = i;
+                puzzlesBeaten.Add(s);
+            }
+            else
+            {
+                i = 100;
+            }
+        }
+
+        if (PlayerPrefs.GetString("Level") == null)
         {
             print("Uh Oh");
             backPos.x = 0;
@@ -120,6 +141,13 @@ public class GameManager : MonoBehaviour {
         levelsBeaten.Add(s);
         numberOfLevelsBeaten++;
         PlayerPrefs.SetString("Door" + numberOfLevelsBeaten, s);
+    }
+
+    public void BeatPuzzle(string s)
+    {
+        puzzlesBeaten.Add(s);
+        numberOfPuzzlesBeaten++;
+        PlayerPrefs.SetString("Puzzle" + numberOfPuzzlesBeaten, s);
     }
 		
     public void NukeSaveData()

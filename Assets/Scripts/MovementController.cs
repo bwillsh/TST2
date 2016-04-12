@@ -19,15 +19,21 @@ public class MovementController : MonoBehaviour {
     Vector2 leftPos = new Vector2(-4.37f, -3);
     Vector2 rightPos = new Vector2(4.06f, -3);
 
-    float mapEdge = 13.5f;
+    float mapEdgeRight = -44.5f;
+	float mapEdgeLeft = 5.75f;
+	public GameObject background;
 
-    public GameObject background;
+	private AudioSource music;
 
     //speed must be changed in the unity editor, at least for right now.
     public float speed = 5;
 
 	void Awake () {
 		S = this;
+		music = GameObject.Find("Music").GetComponent<AudioSource>();
+		if (!GameManager.S.isMuted) {
+			music.Play();
+		}
 	}
 
     // Use this for initialization
@@ -42,8 +48,8 @@ public class MovementController : MonoBehaviour {
 			if (leftHeld) {
 				Vector2 bpos = background.transform.position;
 				bpos.x += speed * Time.deltaTime;
-				if (bpos.x > mapEdge)
-					bpos.x = mapEdge;
+				if (bpos.x > mapEdgeLeft)
+					bpos.x = mapEdgeLeft;
 				background.transform.position = bpos;
 
 				//updates the gameManager to current position
@@ -54,9 +60,9 @@ public class MovementController : MonoBehaviour {
 			} else if (rightHeld) {
 				Vector2 bpos = background.transform.position;
 				bpos.x -= speed * Time.deltaTime;
-				if (bpos.x < -mapEdge)
+				if (bpos.x < mapEdgeRight)
 				{
-					bpos.x = -mapEdge;
+					bpos.x = mapEdgeRight;
 				}
 
 				background.transform.position = bpos;

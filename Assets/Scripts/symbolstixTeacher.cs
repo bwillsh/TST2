@@ -15,12 +15,13 @@ public class symbolstixTeacher : MonoBehaviour {
 
 	void Start () {
 		m = GameObject.Find ("MovementController").GetComponent<MovementController> ();
+       
 	}
 
 
 
 	void OnTriggerEnter2D(Collider2D other) {
-		if (!GameManager.S.levelsBeaten.Contains (puzzle)) {
+		if (!GameManager.S.puzzlesBeaten.Contains (puzzle)) {
 			item.SetActive (true);
 			m.StopRight ();
 			arrow.gameObject.SetActive (false);
@@ -28,7 +29,7 @@ public class symbolstixTeacher : MonoBehaviour {
 	}
 
 	void OnTriggerStay2D(Collider2D other) {
-		if (GameManager.S.levelsBeaten.Contains (puzzle)) {
+		if (GameManager.S.puzzlesBeaten.Contains (puzzle)) {
 			checkmark.SetActive (true);
 		}
 	}
