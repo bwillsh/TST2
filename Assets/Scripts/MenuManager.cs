@@ -1,10 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour {
 
 	public GameObject menuCanvas;
 	public GameObject optionsCanvas;
+	public Toggle mute;
+
+	void Start() {
+		mute.isOn = GameManager.S.isMuted;
+	}
 
 	public void Play() {
 		Application.LoadLevel ("OpenCutscene");
@@ -24,7 +30,7 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void SetMute(bool mute) {
-		print ("setting ismuted to " + mute);
+		PlayerPrefs.SetInt ("Mute", mute ? 1 : 0);
 		GameManager.S.isMuted = mute;
 	}
 
