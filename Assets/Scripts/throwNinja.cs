@@ -133,7 +133,10 @@ public class throwNinja : NinjaParent {
 		if (coll.gameObject.tag == "Foot") {
 			Instantiate (explosion, transform.position, Quaternion.identity);
 			audio.PlayOneShot(audio.clip);
-			Destroy (this.gameObject);
+			if (transform.GetChild(0) != null && transform.GetChild(0).tag == "Ninja") {
+				--combat.NinjaCount;
+			}
+			Destroy(this.gameObject);
 			--combat.NinjaCount;
 			if (combat.NinjaCount == 0) {
 				combat.ItemDropPosition = transform.position;
