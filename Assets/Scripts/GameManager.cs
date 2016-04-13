@@ -191,6 +191,7 @@ public class GameManager : MonoBehaviour {
 		{
 			print (puzzlesBeaten[i]);
 		}
+        numberOfPuzzlesBeaten++;
         PlayerPrefs.SetString("Puzzle" + numberOfPuzzlesBeaten, level);
     }
 }
