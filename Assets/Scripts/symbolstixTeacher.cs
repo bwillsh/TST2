@@ -12,10 +12,12 @@ public class symbolstixTeacher : MonoBehaviour {
 	public bool beaten = false;
 	public GameObject buttons;
 	public GameObject checkmark;
+	public Sprite before, after;
+	private SpriteRenderer sprend;
 
 	void Start () {
 		m = GameObject.Find ("MovementController").GetComponent<MovementController> ();
-       
+		sprend = transform.parent.GetComponent<SpriteRenderer>();
 	}
 
 
@@ -31,6 +33,8 @@ public class symbolstixTeacher : MonoBehaviour {
 	void OnTriggerStay2D(Collider2D other) {
 		if (GameManager.S.puzzlesBeaten.Contains (puzzle)) {
 			checkmark.SetActive (true);
+			sprend.sprite = after;
+			arrow.gameObject.SetActive (true);
 		}
 	}
 			

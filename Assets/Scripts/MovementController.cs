@@ -31,15 +31,15 @@ public class MovementController : MonoBehaviour {
 	void Awake () {
 		S = this;
 		music = GameObject.Find("Music").GetComponent<AudioSource>();
-		if (!GameManager.S.isMuted) {
-			music.Play();
-		}
 	}
 
     // Use this for initialization
     void Start () {
         background.transform.position = GameManager.S.backPos;
 		disableControls = false;
+		if (!GameManager.S.isMuted) {
+			music.Play();
+		}
 	}
 	
 	// Update is called once per frame
