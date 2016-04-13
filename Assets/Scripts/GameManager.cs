@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour {
 		isMuted = (PlayerPrefs.GetInt ("Mute") == 1);
 
         levelsBeaten = new List<string>();
-        for (int i = 1; i <= 6; i++)
+        for (int i = 1; i <= 36; i++)
         {
             string s = PlayerPrefs.GetString("Door" + i);
             if (s != null && s != "" && s != "null")
@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour {
         }
 
         puzzlesBeaten = new List<string>();
-        for (int i = 1; i <= 6; i++)
+        for (int i = 1; i <= 18; i++)
         {
             string s = PlayerPrefs.GetString("Puzzle" + i);
             if (s != null && s != "" && s != "null")
@@ -170,12 +170,12 @@ public class GameManager : MonoBehaviour {
         PlayerPrefs.SetString("Inv", "");
         levelsBeaten = new List<string>();
         numberOfLevelsBeaten = 0;
-        for (int i = 1; i <= 8; i++)
+        for (int i = 1; i <= 36; i++)
         {
             PlayerPrefs.SetString("Door" + i, "null");
         }
         numberOfPuzzlesBeaten = 0;
-        for (int i = 1; i <= 8; i++)
+        for (int i = 1; i <= 20; i++)
         {
             PlayerPrefs.SetString("Puzzle" + i, "null");
         }
@@ -191,6 +191,7 @@ public class GameManager : MonoBehaviour {
 		{
 			print (puzzlesBeaten[i]);
 		}
+        numberOfPuzzlesBeaten++;
         PlayerPrefs.SetString("Puzzle" + numberOfPuzzlesBeaten, level);
     }
 }
