@@ -14,6 +14,8 @@ public class LevelGen : MonoBehaviour {
     public int futureNinjas = 1;
     public int numJumps = 4;
 
+    int blah = 0;
+
     //GameObjects for prefabs
     public GameObject wall;
     public Ninja ninja;
@@ -35,6 +37,7 @@ public class LevelGen : MonoBehaviour {
     }
 	// Use this for initialization
 	void Start () {
+        blah = 0;
         DontDestroyOnLoad(this.gameObject);
         futureNinjas = numNinjas;
         futureWalls = numWalls;
@@ -60,9 +63,14 @@ public class LevelGen : MonoBehaviour {
         //If you want the levels to get harder, fetch the newest numbers
         if(progressing)
         {
-            numWalls = futureWalls;
-            numNinjas = futureNinjas;
-            futureWalls++;
+            blah++;
+            numWalls = blah%10 + 1;
+            if (blah < 10)
+                numNinjas = 1;
+            else if (blah < 20)
+                numNinjas = 2;
+            else
+                numNinjas = 3;
         }
        
         //clear old walls
@@ -150,7 +158,7 @@ public class LevelGen : MonoBehaviour {
                     float x2 = n.transform.position.x;
                     float y2 = n.transform.position.y;
                     float dist = Mathf.Sqrt(Mathf.Pow(x2 - x, 2) + Mathf.Pow(y2 - y, 2));
-                    if (dist < 3)
+                    if (dist < 5)
                         good = false;
                 }
 
@@ -190,13 +198,8 @@ public class LevelGen : MonoBehaviour {
             }
 
             //if not good, stop adding walls. even if you are not at numWalls
-            //also drops number of walls for next time and adds a ninjasdf
-            else
-            {
-                i = numWalls + 10;
-                futureNinjas++;
-                futureWalls = 1;
-            }
+        
+            
         }//End wall placement
         
     }

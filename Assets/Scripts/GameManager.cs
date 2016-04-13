@@ -80,11 +80,11 @@ public class GameManager : MonoBehaviour {
             PlayerPrefs.Save();
         }
 
-        if (PlayerPrefs.GetString("Level") != "Menu" && Application.loadedLevelName == "Menu")
+       /* if (PlayerPrefs.GetString("Level") != "Menu" && Application.loadedLevelName == "Menu")
         {
             print("Loading new level");
             Application.LoadLevel(PlayerPrefs.GetString("Level"));
-        }
+        } */
     }
 	// Use this for initialization
 	void Start () {
@@ -98,7 +98,9 @@ public class GameManager : MonoBehaviour {
     void Update()
     {
 
-        if(Application.loadedLevelName != "" && Application.loadedLevelName != null )
+        if(Application.loadedLevelName == "hall1" || Application.loadedLevelName == "hall2" || 
+            Application.loadedLevelName == "hall3" || Application.loadedLevelName == "hall4" || 
+            Application.loadedLevelName == "hall5" || Application.loadedLevelName == "hall6" )
         {
             PlayerPrefs.SetString("Level", Application.loadedLevelName);
             PlayerPrefs.SetFloat("BackX", backPos.x);
@@ -126,14 +128,23 @@ public class GameManager : MonoBehaviour {
     }
 
 	public bool IsHallBeaten() {
-		switch (currentHall) {
+        /*switch (currentHall) {
 		case "1":
 			return levelsBeaten.Contains ("combat_Tutorial");
 		case "2":
 			return levelsBeaten.Contains ("combat_Beta_1") && levelsBeaten.Contains ("combat_Beta_2") && levelsBeaten.Contains ("combat_Beta_3");
 		default:
 			return false;
-		}
+		}*/
+        bool good = true;
+        for(int i = 1; i <=6; i++)
+        {
+            if(!levelsBeaten.Contains("h" + currentHall + "d" + i))
+            {
+                good = false;
+            }
+        }
+        return good;
 	}
 
     public void BeatLevel(string s)
@@ -162,6 +173,11 @@ public class GameManager : MonoBehaviour {
         for (int i = 1; i <= 8; i++)
         {
             PlayerPrefs.SetString("Door" + i, "null");
+        }
+        numberOfPuzzlesBeaten = 0;
+        for (int i = 1; i <= 8; i++)
+        {
+            PlayerPrefs.SetString("Puzzle" + i, "null");
         }
         backPos = new Vector2(0, 2.75f);
         PlayerPrefs.Save();
