@@ -56,9 +56,16 @@ public class CombatController : MonoBehaviour {
 		S = this;
 		Input.multiTouchEnabled = false;
 
+		Transform sounds = GameObject.Find("CombatSounds").GetComponent<Transform>();
+		//----------COMMENT OUT BELOW TO UNMUTE FORTESTING--------------
+		foreach (Transform child in sounds)
+		{
+			child.GetComponent<AudioSource>().mute = true;
+		}
+		//----------COMMENT OUT ABOVE TO UNMUTE FOR TESTING
+
 		if (GameManager.S != null)
 		{
-			Transform sounds = GameObject.Find("CombatSounds").GetComponent<Transform>();
 			if (GameManager.S.isMuted)
 			{
 				foreach (Transform child in sounds)
