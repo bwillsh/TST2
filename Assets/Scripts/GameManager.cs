@@ -184,5 +184,12 @@ public class GameManager : MonoBehaviour {
         Application.LoadLevel("Menu");
     }
 
-
+	public void addPuzzleLevel(string level)
+	{
+		puzzlesBeaten.Add(level);
+		for (int i = 0 ; i < puzzlesBeaten.Count; ++i)
+		{
+			print (puzzlesBeaten[i]);
+		}
+	}
 }

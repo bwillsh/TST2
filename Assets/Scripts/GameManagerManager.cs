@@ -6,7 +6,7 @@ public class GameManagerManager : MonoBehaviour {
 
     public GameObject GM;
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         GameObject clone = GameObject.Find("GameManager(Clone)");
         if (clone == null)
         {
