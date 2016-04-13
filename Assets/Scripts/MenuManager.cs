@@ -13,7 +13,18 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void Play() {
-		Application.LoadLevel ("OpenCutscene");
+        string lvl = PlayerPrefs.GetString("Level");
+        if (lvl == "hall1" || lvl == "hall2" ||
+            lvl == "hall3" || lvl == "hall4" ||
+            lvl == "hall5" || lvl == "hall6")
+        {
+            Application.LoadLevel(PlayerPrefs.GetString("Level"));
+        }
+        else
+        {
+            Application.LoadLevel("OpenCutscene");
+        }
+            
 	}
 
 	public void Endless() {
