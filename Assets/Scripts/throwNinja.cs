@@ -91,7 +91,8 @@ public class throwNinja : NinjaParent {
 			if (current_turn > 0)
 				NextState();
 			current_turn = 0;
-			Instantiate(NinjaStar, transform.position, Quaternion.identity);
+			GameObject star = Instantiate(NinjaStar, transform.position, Quaternion.identity) as GameObject;
+			star.GetComponent<AudioSource> ().enabled = !GameManager.S.isMuted;
 
 		} 
 		else if(combat.turn == TurnState.ENEMYSTART) {

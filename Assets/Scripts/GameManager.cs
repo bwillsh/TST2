@@ -176,6 +176,7 @@ public class GameManager : MonoBehaviour {
         {
             PlayerPrefs.SetString("Door" + i, "null");
         }
+		puzzlesBeaten = new List<string>();
         numberOfPuzzlesBeaten = 0;
         for (int i = 1; i <= 20; i++)
         {

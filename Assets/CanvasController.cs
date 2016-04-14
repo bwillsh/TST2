@@ -15,6 +15,9 @@ public class CanvasController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		count = 0;
+		if (GameManager.S.isMuted) {
+			GameObject.Find ("TooManyCooks").active = false;
+		}
 	}
 
 	public float timeLeft = 30.0f;
