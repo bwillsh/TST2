@@ -23,8 +23,8 @@ public class symbolstixTeacher : MonoBehaviour {
 
 
 	void OnTriggerEnter2D(Collider2D other) {
+		item.SetActive (true);
 		if (!GameManager.S.puzzlesBeaten.Contains (puzzle)) {
-			item.SetActive (true);
 			m.StopRight ();
 			arrow.gameObject.SetActive (false);
 		}

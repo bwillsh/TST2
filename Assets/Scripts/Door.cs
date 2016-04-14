@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Door : MonoBehaviour {
 
@@ -28,6 +29,14 @@ public class Door : MonoBehaviour {
         print("Loading Level " + loadWhichLevel);
 		GameManager.S.currentHall = loadWhichLevel[1] - '0';
 		GameManager.S.level = Application.loadedLevel;
+
+		List<string> halls = new List<string>{ "hall1", "hall2", "hall3", "hall4", "hall5", "hall6" };
+		if (halls.Contains (loadWhichLevel)) {
+			GameManager.S.backPos.x = 0f;
+			PlayerPrefs.SetFloat("BackX", 0);
+			GameManager.S.currentItem = "";
+		}
+
 		Application.LoadLevel (loadWhichLevel);
     }
 
