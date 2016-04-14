@@ -5,7 +5,6 @@ public class Door : MonoBehaviour {
 
 	TextMesh tm;
 	public string loadWhichLevel;
-	public string hall;
 	public GameObject star;
 
 	// Use this for initialization
@@ -27,7 +26,7 @@ public class Door : MonoBehaviour {
 		MovementController.S.disableControls = true;
 		tm.gameObject.SetActive (true);
         print("Loading Level " + loadWhichLevel);
-		GameManager.S.currentHall = hall;
+		GameManager.S.currentHall = loadWhichLevel[1] - '0';
 		GameManager.S.level = Application.loadedLevel;
 		Application.LoadLevel (loadWhichLevel);
     }

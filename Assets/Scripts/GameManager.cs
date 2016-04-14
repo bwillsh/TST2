@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour {
     public List<string> puzzlesBeaten;
     int numberOfLevelsBeaten = 0;
 
-	public string currentHall;
+	public int currentHall;
 
     int numberOfPuzzlesBeaten = 0;
 	public bool isMuted = false;
