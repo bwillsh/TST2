@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour {
 
     int numberOfPuzzlesBeaten = 0;
 	public bool isMuted = false;
+	public bool isTimed = true;
 
 
 	public static GameManager S;
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour {
         backPos.y = PlayerPrefs.GetFloat("BackY");
         currentItem = PlayerPrefs.GetString("Inv");
 		isMuted = (PlayerPrefs.GetInt ("Mute") == 1);
+		isTimed = (PlayerPrefs.GetInt ("Timer") == 1);
 
         levelsBeaten = new List<string>();
         for (int i = 1; i <= 36; i++)

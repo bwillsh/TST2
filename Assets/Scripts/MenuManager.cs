@@ -6,10 +6,12 @@ public class MenuManager : MonoBehaviour {
 
 	public GameObject menuCanvas;
 	public GameObject optionsCanvas;
-	public Toggle mute;
+	public Toggle myMute;
+	public Toggle myTimer;
 
 	void Start() {
-		mute.isOn = GameManager.S.isMuted;
+		myMute.isOn = GameManager.S.isMuted;
+		myTimer.isOn = GameManager.S.isTimed;
 	}
 
 	public void Play() {
@@ -43,6 +45,11 @@ public class MenuManager : MonoBehaviour {
 	public void SetMute(bool mute) {
 		PlayerPrefs.SetInt ("Mute", mute ? 1 : 0);
 		GameManager.S.isMuted = mute;
+	}
+
+	public void SetTimer(bool timer) {
+		PlayerPrefs.SetInt ("Timer", timer ? 1 : 0);
+		GameManager.S.isTimed = timer;
 	}
 
 	public void ResetSave() {
