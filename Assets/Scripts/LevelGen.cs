@@ -85,7 +85,7 @@ public class LevelGen : MonoBehaviour {
         for (int i = 0; i < numNinjas; i++)
         {
             //spawns a ninja on edge of screen
-            x = Random.Range(-7f, -5);
+            x = Random.Range(-7f, 0);
             y = Random.Range(min.y, max.y);
             Ninja clone = (Ninja)Instantiate(ninja, new Vector3(x, y, -1), Quaternion.identity);
 
@@ -97,10 +97,12 @@ public class LevelGen : MonoBehaviour {
 
             //set up jump points at equal intervals
             float jx = x;
-            float inc = (Foot.S.transform.position.x - x) / numJumps;
-
+           float  jx2 = Random.Range(8f, 13.0f);
+            numJumps = Random.Range(3, 6);
+            float inc = (jx2 - x) / numJumps;
+           
             //spawn number of jump points
-            for (int j = 1; j < numJumps; j++)
+            for (int j = 1; j < numJumps - 1; j++)
             {
                 print("Jump point " + j);
                 jx += inc;
@@ -108,7 +110,10 @@ public class LevelGen : MonoBehaviour {
                 GameObject tpoint = (GameObject)Instantiate(empty, new Vector3(jx, jy, -1), Quaternion.identity);
                 clone.jumpPoints.Add(tpoint.transform);
             }
-
+            
+            float jy2 = Random.Range(min.y, max.y);
+            GameObject tpoint2 = (GameObject)Instantiate(empty, new Vector3(jx2, jy2, -1), Quaternion.identity);
+            clone.jumpPoints.Add(tpoint2.transform);
             //last jump point = to tommy
             GameObject ttpoint = (GameObject)Instantiate(empty, Foot.S.transform.position, Quaternion.identity);
             clone.jumpPoints.Add(ttpoint.transform);
@@ -124,7 +129,7 @@ public class LevelGen : MonoBehaviour {
         for (int i = 0; i < numWalls; i++)
         {
             //set a random point for the wall
-            x = Random.Range(min.x, max.x);
+            x = Random.Range(min.x, 8);
             y = Random.Range(min.y, max.y);
 
             //test to see if point is ok
@@ -132,7 +137,7 @@ public class LevelGen : MonoBehaviour {
             while(!good)
             {
                 //creates a new test location
-                x = Random.Range(min.x, max.x);
+                x = Random.Range(min.x, 8);
                 y = Random.Range(min.y, max.y);
 
                 //only need one bad point to throw out cur wall
