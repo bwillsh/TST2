@@ -11,6 +11,7 @@ public class Door : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		tm = GetComponentInChildren<TextMesh>(true);
+		tm.text = loadWhichLevel [1] + "-" + loadWhichLevel [3];
 	}
 
 	// Update is called once per frame
@@ -25,7 +26,7 @@ public class Door : MonoBehaviour {
     public void Button()
     {
 		MovementController.S.disableControls = true;
-		tm.gameObject.SetActive (true);
+		tm.text = "Loading...";
         print("Loading Level " + loadWhichLevel);
 		GameManager.S.currentHall = loadWhichLevel[1] - '0';
 		GameManager.S.level = Application.loadedLevel;
