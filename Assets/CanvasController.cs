@@ -22,9 +22,13 @@ public class CanvasController : MonoBehaviour {
 	public bool lost = false;
 
 	void Update(){		
-		StartCoroutine ("startTimer");
+		if (GameManager.S.isTimed) {
+			StartCoroutine ("startTimer");
+		}
 		if (count == num_answers && !lost) {
-			StopCoroutine ("startTimer");
+			if (GameManager.S.isTimed) {
+				StopCoroutine ("startTimer");
+			}
 			StartCoroutine (win ());
 		}
 
