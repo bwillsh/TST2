@@ -8,8 +8,18 @@ public class MenuManager : MonoBehaviour {
 	public GameObject optionsCanvas;
 	public Toggle mute;
 
+	public AudioSource music;
+
 	void Start() {
 		mute.isOn = GameManager.S.isMuted;
+	}
+
+	void Update(){
+		if (GameManager.S.isMuted) {
+			music.mute = true;
+		} else {
+			music.mute = false;
+		}
 	}
 
 	public void Play() {
